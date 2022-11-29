@@ -20,6 +20,7 @@ kind: Application
 metadata:
   generateName: cluster-api-core-
   namespace: argocd
+spec:
   destination:
     server: https://172.18.255.200:443
   ignoreDifferences:
@@ -98,6 +99,38 @@ spec:
   project: default
   source:
     path: cluster-api-control-plane
+    repoURL: https://github.com/eschercloudai/helm-cluster-api
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      selfHeal: true
+    syncOptions:
+    - RespectIgnoreDifferences=true
+```
+
+### Providers
+
+Add providers to allow CAPI to talk to various cloud providers.
+
+#### OpenStack
+
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  generateName: cluster-api-provider-openstack-
+  namespace: argocd
+spec:
+  destination:
+    server: https://172.18.255.200:443
+  ignoreDifferences:
+  - group: apiextensions.k8s.io
+    jsonPointers:
+    - /spec/conversion/webhook/clientConfig/caBundle
+    kind: CustomResourceDefinition
+  project: default
+  source:
+    path: cluster-api-provider-openstack
     repoURL: https://github.com/eschercloudai/helm-cluster-api
     targetRevision: HEAD
   syncPolicy:
