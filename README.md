@@ -12,6 +12,8 @@ When we encounter one of the annoying evironment variables, we replace it with G
 
 ## Using with ArgoCD
 
+Deploy the core components:
+
 ```yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -44,10 +46,71 @@ metadata:
     - RespectIgnoreDifferences=true
 ```
 
+Deploy the boostrap components:
+
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  generateName: cluster-api-bootstrap-
+  namespace: argocd
+spec:
+  destination:
+    server: https://172.18.255.200:443
+  ignoreDifferences:
+  - group: apiextensions.k8s.io
+    jsonPointers:
+    - /spec/conversion/webhook/clientConfig/caBundle
+    kind: CustomResourceDefinition
+  project: default
+  source:
+    path: cluster-api-bootstrap
+    repoURL: https://github.com/eschercloudai/helm-cluster-api
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      selfHeal: true
+    syncOptions:
+    - RespectIgnoreDifferences=true
+```
+
+Deploy the control plane components:
+
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  generateName: cluster-api-control-plane-
+  namespace: argocd
+spec:
+  destination:
+    server: https://172.18.255.200:443
+  ignoreDifferences:
+  - group: rbac.authorization.k8s.io
+    jsonPointers:
+    - /rules
+    kind: ClusterRole
+    name: capi-kubeadm-control-plane-aggregated-manager-role
+  - group: apiextensions.k8s.io
+    jsonPointers:
+    - /spec/conversion/webhook/clientConfig/caBundle
+    kind: CustomResourceDefinition
+  project: default
+  source:
+    path: cluster-api-control-plane
+    repoURL: https://github.com/eschercloudai/helm-cluster-api
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      selfHeal: true
+    syncOptions:
+    - RespectIgnoreDifferences=true
+```
+
 ## Developers
 
 It's a simple as:
 
 ```shell
-./generate.py --chart cluster-api --path https://github.com/kubernetes-sigs/cluster-api.git/config/default?ref=v1.2.6
+make -e VERSION=v1.2.6
 ```

@@ -1,0 +1,3 @@
+exp_kubeadm_bootstrap_format_ignition: false
+exp_machine_pool: false
+kubeadm_bootstrap_token_ttl: 15m

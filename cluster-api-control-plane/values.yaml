@@ -1,0 +1,2 @@
+cluster_topology: false
+exp_kubeadm_bootstrap_format_ignition: false
