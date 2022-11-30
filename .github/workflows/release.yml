@@ -1,0 +1,21 @@
+name: Release
+on:
+  push:
+    branches-ignore:
+    - '*'
+    tags:
+    - '*'
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Install Helm
+      uses: azure/setup-helm@v3
+    - name: Release
+      uses: helm/chart-releaser-action@v1.4.1
+      charts_dir: ""
+      env:
+        CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}

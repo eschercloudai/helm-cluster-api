@@ -12,6 +12,52 @@ When we encounter one of the annoying evironment variables, we replace it with G
 
 ## Using with ArgoCD
 
+### Prerequisites
+
+This chart requires the following to be installed on the target cluster first:
+
+#### Cert-Manager
+
+Can be done easily enough with:
+
+```shell
+helm repo add jetstack https://charts.jetstack.io
+helm repo update
+helm install cert-manager jetstack/cert-manager --version v1.10.1 --namespace cert-manager --create-namespace
+```
+
+Or using ArgoCD:
+
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  generateName: cert-manager-
+  namespace: argocd
+  labels:
+    project.unikorn.eschercloud.ai: ${PROJECT}
+    controlplane.unikorn.eschercloud.ai: ${CONTROL_PLANE}
+spec:
+  project: default
+  source:
+    chart: cert-manager
+    repoURL: https://charts.jetstack.io
+    targetRevision: v1.10.1
+    helm:
+      releaseName: cert-manager
+      parameters:
+      - name: installCRDs
+        value: true
+  destination:
+    name: ${TARGET_VCLUSTER}
+    namespace: cert-manager
+  syncPolicy:
+    automated:
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+```
+
 ### One Ring To Rule Them All...
 
 There is a top level chart-of-charts that will just install everything as a big bang operation:
