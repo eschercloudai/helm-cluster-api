@@ -12,6 +12,52 @@ When we encounter one of the annoying evironment variables, we replace it with G
 
 ## Using with ArgoCD
 
+### One Ring To Rule Them All...
+
+There is a top level chart-of-charts that will just install everything as a big bang operation:
+
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cluster-api
+  namespace: argocd
+spec:
+  destination:
+    server: https://172.18.255.200:443
+  ignoreDifferences:
+  # Aggregated roles are mangically updated by the API.
+  - group: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: capi-aggregated-manager-role
+    jsonPointers:
+    - /rules
+  - group: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: capi-kubeadm-control-plane-aggregated-manager-role
+    jsonPointers:
+    - /rules
+  # CA certs are injected by cert-manager mutation
+  - group: apiextensions.k8s.io
+    kind: CustomResourceDefinition
+    jsonPointers:
+    - /spec/conversion/webhook/clientConfig/caBundle
+  project: default
+  source:
+    repoURL: https://github.com/eschercloudai/helm-cluster-api
+    path: cluster-api
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      selfHeal: true
+    syncOptions:
+    - RespectIgnoreDifferences=true
+```
+
+### Separate Deployments
+
+You may want to be a little less gung-ho and deploy the pieces as separate applications.
+
 Deploy the core components:
 
 ```yaml
@@ -37,7 +83,7 @@ spec:
     - /spec/conversion/webhook/clientConfig/caBundle
   project: default
   source:
-    path: cluster-api-core
+    path: cluster-api/charts/cluster-api-core
     repoURL: https://github.com/eschercloudai/helm-cluster-api
     targetRevision: HEAD
   syncPolicy:
@@ -65,7 +111,7 @@ spec:
     kind: CustomResourceDefinition
   project: default
   source:
-    path: cluster-api-bootstrap-kubeadm
+    path: cluster-api/charts/cluster-api-bootstrap-kubeadm
     repoURL: https://github.com/eschercloudai/helm-cluster-api
     targetRevision: HEAD
   syncPolicy:
@@ -98,7 +144,7 @@ spec:
     kind: CustomResourceDefinition
   project: default
   source:
-    path: cluster-api-control-plane-kubeadm
+    path: cluster-api/charts/cluster-api-control-plane-kubeadm
     repoURL: https://github.com/eschercloudai/helm-cluster-api
     targetRevision: HEAD
   syncPolicy:
@@ -107,8 +153,6 @@ spec:
     syncOptions:
     - RespectIgnoreDifferences=true
 ```
-
-### Providers
 
 Add providers to allow CAPI to talk to various cloud providers.
 
@@ -130,7 +174,7 @@ spec:
     kind: CustomResourceDefinition
   project: default
   source:
-    path: cluster-api-provider-openstack
+    path: cluster-api/charts/cluster-api-provider-openstack
     repoURL: https://github.com/eschercloudai/helm-cluster-api
     targetRevision: HEAD
   syncPolicy:
@@ -144,6 +188,6 @@ spec:
 
 It's a simple as:
 
-* Bump the versions in `Makefile` and `Chart.yaml`
+* Bump the versions in `Makefile` and `cluster-api/Chart.yaml`
 * Run `make`
 * Commit and release.
