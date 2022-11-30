@@ -4,6 +4,7 @@ import argparse
 import collections
 import os
 import re
+import shutil
 import subprocess
 import yaml
 
@@ -16,9 +17,14 @@ def main():
 
     args = parser.parse_args()
 
+    chart_root = f'cluster-api/charts/{args.chart}'
+
+    # Clean up so we don't leave any orphaned bits about.
+    shutil.rmtree(chart_root)
+
     # Define directory structure.
-    os.makedirs(f'{args.chart}/crds', exist_ok=True)
-    os.makedirs(f'{args.chart}/templates', exist_ok=True)
+    os.makedirs(f'{chart_root}/crds', exist_ok=True)
+    os.makedirs(f'{chart_root}/templates', exist_ok=True)
 
     # Define chart description.
     chart = {
@@ -30,7 +36,7 @@ def main():
         'appVersion': args.app_version,
     }
 
-    with open(f'{args.chart}/Chart.yaml', 'w') as out:
+    with open(f'{chart_root}/Chart.yaml', 'w') as out:
         yaml.safe_dump(chart, out)
 
     # Process the official manifests.
@@ -47,7 +53,7 @@ def main():
 
         # CRDs go in a special place.
         if kind == 'CustomResourceDefinition':
-            with open(f'{args.chart}/crds/{o["metadata"]["name"]}.yaml', 'w') as out:
+            with open(f'{chart_root}/crds/{o["metadata"]["name"]}.yaml', 'w') as out:
                 yaml.safe_dump(o, out)
             continue
 
@@ -77,10 +83,10 @@ def main():
         count = counts[kind]
         counts[kind] += 1
 
-        with open(f'{args.chart}/templates/{kind.lower()}-{count}.yaml', 'w') as out:
+        with open(f'{chart_root}/templates/{kind.lower()}-{count}.yaml', 'w') as out:
             out.write(resource)
 
-        with open(f'{args.chart}/values.yaml', 'w') as out:
+        with open(f'{chart_root}/values.yaml', 'w') as out:
             yaml.safe_dump(values, out)
 
 
