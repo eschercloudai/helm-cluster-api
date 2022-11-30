@@ -76,6 +76,7 @@ helm install eschercloudai-capi/cluster-api --version v0.1.0
 
 <details>
 <summary>ArgoCD</summary>
+
 ```yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -133,6 +134,7 @@ helm install eschercloudai-capi/cluster-api-core --version v0.1.0
 
 <details>
 <summary>ArgoCD</summary>
+
 ```yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -181,6 +183,7 @@ helm install eschercloudai-capi/cluster-api-bootstrap-kubeadm --version v0.1.0
 
 <details>
 <summary>ArgoCD</summary>
+
 ```yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -222,6 +225,7 @@ helm install eschercloudai-capi/cluster-api-control-plane-kubeadm --version v0.1
 
 <details>
 <summary>ArgoCD</summary>
+
 ```yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -272,6 +276,7 @@ helm install eschercloudai-capi/cluster-api-provider-openstack --version v0.1.0
 
 <details>
 <summary>ArgoCD</summary>
+
 ```yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
