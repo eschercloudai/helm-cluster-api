@@ -144,6 +144,6 @@ spec:
 
 It's a simple as:
 
-* Bump the versions in `Makefile`
+* Bump the versions in `Makefile` and `Chart.yaml`
 * Run `make`
 * Commit and release.
