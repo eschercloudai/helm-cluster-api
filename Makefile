@@ -34,5 +34,12 @@ cluster-api-provider-openstack:
 
 .PHONY: test
 test:
-	set -e; for chart in $(CHARTS); do helm template cluster-api/charts/$${chart} > /dev/null; done
-	set -e; helm template cluster-api > /dev/null
+	set -e; \
+	for chart in $(CHARTS); do \
+		helm lint charts/$${chart}; \
+		helm template charts/$${chart} > /dev/null; \
+	done
+	set -e; \
+	helm dependency update charts/cluster-api; \
+	helm lint charts/cluster-api; \
+	helm template charts/cluster-api > /dev/null

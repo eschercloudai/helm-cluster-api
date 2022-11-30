@@ -18,15 +18,18 @@ This chart requires the following to be installed on the target cluster first:
 
 #### Cert-Manager
 
-Can be done easily enough with:
+<details>
+<summary>Helm</summary>
 
 ```shell
 helm repo add jetstack https://charts.jetstack.io
 helm repo update
 helm install cert-manager jetstack/cert-manager --version v1.10.1 --namespace cert-manager --create-namespace
 ```
+</details>
 
-Or using ArgoCD:
+<details>
+<summary>ArgoCD</summary>
 
 ```yaml
 apiVersion: argoproj.io/v1alpha1
@@ -57,11 +60,24 @@ spec:
     syncOptions:
     - CreateNamespace=true
 ```
+</details>
 
 ### One Ring To Rule Them All...
 
-There is a top level chart-of-charts that will just install everything as a big bang operation:
+There is a top level chart-of-charts that will just install everything as a big bang operation.
 
+<details>
+<summary>Helm</summary>
+
+```shell
+helm repo add eschercloudai-capi https://eschercloudai.github.io/helm-cluster-api
+helm repo update
+helm install eschercloudai-capi/cluster-api --version v0.1.0
+```
+</details>
+
+<details>
+<summary>ArgoCD</summary>
 ```yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -69,6 +85,11 @@ metadata:
   name: cluster-api
   namespace: argocd
 spec:
+  project: default
+  source:
+    repoURL: https://eschercloudai.github.io/helm-cluster-api
+    chart: cluster-api
+    targetRevision: v0.1.0
   destination:
     server: https://172.18.255.200:443
   ignoreDifferences:
@@ -88,17 +109,13 @@ spec:
     kind: CustomResourceDefinition
     jsonPointers:
     - /spec/conversion/webhook/clientConfig/caBundle
-  project: default
-  source:
-    repoURL: https://github.com/eschercloudai/helm-cluster-api
-    path: cluster-api
-    targetRevision: HEAD
   syncPolicy:
     automated:
       selfHeal: true
     syncOptions:
     - RespectIgnoreDifferences=true
 ```
+</details>
 
 ### Separate Deployments
 
@@ -106,6 +123,18 @@ You may want to be a little less gung-ho and deploy the pieces as separate appli
 
 Deploy the core components:
 
+<details>
+<summary>Helm</summary>
+
+```shell
+helm repo add eschercloudai-capi https://eschercloudai.github.io/helm-cluster-api
+helm repo update
+helm install eschercloudai-capi/cluster-api-core --version v0.1.0
+```
+</details>
+
+<details>
+<summary>ArgoCD</summary>
 ```yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -113,6 +142,11 @@ metadata:
   generateName: cluster-api-core-
   namespace: argocd
 spec:
+  project: default
+  source:
+    repoURL: https://eschercloudai.github.io/helm-cluster-api
+    chart: cluster-api-core
+    targetRevision: v0.1.0
   destination:
     server: https://172.18.255.200:443
   ignoreDifferences:
@@ -127,20 +161,28 @@ spec:
     kind: CustomResourceDefinition
     jsonPointers:
     - /spec/conversion/webhook/clientConfig/caBundle
-  project: default
-  source:
-    path: cluster-api/charts/cluster-api-core
-    repoURL: https://github.com/eschercloudai/helm-cluster-api
-    targetRevision: HEAD
   syncPolicy:
     automated:
       selfHeal: true
     syncOptions:
     - RespectIgnoreDifferences=true
 ```
+</details>
 
 Deploy the boostrap components:
 
+<details>
+<summary>Helm</summary>
+
+```shell
+helm repo add eschercloudai-capi https://eschercloudai.github.io/helm-cluster-api
+helm repo update
+helm install eschercloudai-capi/cluster-api-bootstrap-kubeadm --version v0.1.0
+```
+</details>
+
+<details>
+<summary>ArgoCD</summary>
 ```yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -148,6 +190,11 @@ metadata:
   generateName: cluster-api-bootstrap-kubeadm-
   namespace: argocd
 spec:
+  project: default
+  source:
+    repoURL: https://eschercloudai.github.io/helm-cluster-api
+    chart: cluster-api-bootstrap-kubeadm
+    targetRevision: v0.1.0
   destination:
     server: https://172.18.255.200:443
   ignoreDifferences:
@@ -155,20 +202,28 @@ spec:
     jsonPointers:
     - /spec/conversion/webhook/clientConfig/caBundle
     kind: CustomResourceDefinition
-  project: default
-  source:
-    path: cluster-api/charts/cluster-api-bootstrap-kubeadm
-    repoURL: https://github.com/eschercloudai/helm-cluster-api
-    targetRevision: HEAD
   syncPolicy:
     automated:
       selfHeal: true
     syncOptions:
     - RespectIgnoreDifferences=true
 ```
+</details>
 
 Deploy the control plane components:
 
+<details>
+<summary>Helm</summary>
+
+```shell
+helm repo add eschercloudai-capi https://eschercloudai.github.io/helm-cluster-api
+helm repo update
+helm install eschercloudai-capi/cluster-api-control-plane-kubeadm --version v0.1.0
+```
+</details>
+
+<details>
+<summary>ArgoCD</summary>
 ```yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -176,6 +231,11 @@ metadata:
   generateName: cluster-api-control-plane-kubeadm-
   namespace: argocd
 spec:
+  project: default
+  source:
+    repoURL: https://eschercloudai.github.io/helm-cluster-api
+    chart: cluster-api-control-plane-kubeadm
+    targetRevision: v0.1.0
   destination:
     server: https://172.18.255.200:443
   ignoreDifferences:
@@ -188,22 +248,30 @@ spec:
     jsonPointers:
     - /spec/conversion/webhook/clientConfig/caBundle
     kind: CustomResourceDefinition
-  project: default
-  source:
-    path: cluster-api/charts/cluster-api-control-plane-kubeadm
-    repoURL: https://github.com/eschercloudai/helm-cluster-api
-    targetRevision: HEAD
   syncPolicy:
     automated:
       selfHeal: true
     syncOptions:
     - RespectIgnoreDifferences=true
 ```
+</details>
 
 Add providers to allow CAPI to talk to various cloud providers.
 
 #### OpenStack
 
+<details>
+<summary>Helm</summary>
+
+```shell
+helm repo add eschercloudai-capi https://eschercloudai.github.io/helm-cluster-api
+helm repo update
+helm install eschercloudai-capi/cluster-api-provider-openstack --version v0.1.0
+```
+</details>
+
+<details>
+<summary>ArgoCD</summary>
 ```yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -211,6 +279,11 @@ metadata:
   generateName: cluster-api-provider-openstack-
   namespace: argocd
 spec:
+  project: default
+  source:
+    repoURL: https://eschercloudai.github.io/helm-cluster-api
+    chart: cluster-api-provider-openstack
+    targetRevision: v0.1.0
   destination:
     server: https://172.18.255.200:443
   ignoreDifferences:
@@ -218,22 +291,18 @@ spec:
     jsonPointers:
     - /spec/conversion/webhook/clientConfig/caBundle
     kind: CustomResourceDefinition
-  project: default
-  source:
-    path: cluster-api/charts/cluster-api-provider-openstack
-    repoURL: https://github.com/eschercloudai/helm-cluster-api
-    targetRevision: HEAD
   syncPolicy:
     automated:
       selfHeal: true
     syncOptions:
     - RespectIgnoreDifferences=true
 ```
+</details>
 
 ## Developers
 
 It's a simple as:
 
-* Bump the versions in `Makefile` and `cluster-api/Chart.yaml`
+* Bump the versions in `Makefile` and `charts/cluster-api/Chart.yaml`
 * Run `make`
-* Commit and release.
+* Commit and marge.
