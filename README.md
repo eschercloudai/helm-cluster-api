@@ -37,7 +37,7 @@ spec:
     - /spec/conversion/webhook/clientConfig/caBundle
   project: default
   source:
-    path: cluster-api
+    path: cluster-api-core
     repoURL: https://github.com/eschercloudai/helm-cluster-api
     targetRevision: HEAD
   syncPolicy:
@@ -53,7 +53,7 @@ Deploy the boostrap components:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  generateName: cluster-api-bootstrap-
+  generateName: cluster-api-bootstrap-kubeadm-
   namespace: argocd
 spec:
   destination:
@@ -65,7 +65,7 @@ spec:
     kind: CustomResourceDefinition
   project: default
   source:
-    path: cluster-api-bootstrap
+    path: cluster-api-bootstrap-kubeadm
     repoURL: https://github.com/eschercloudai/helm-cluster-api
     targetRevision: HEAD
   syncPolicy:
@@ -81,7 +81,7 @@ Deploy the control plane components:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  generateName: cluster-api-control-plane-
+  generateName: cluster-api-control-plane-kubeadm-
   namespace: argocd
 spec:
   destination:
@@ -98,7 +98,7 @@ spec:
     kind: CustomResourceDefinition
   project: default
   source:
-    path: cluster-api-control-plane
+    path: cluster-api-control-plane-kubeadm
     repoURL: https://github.com/eschercloudai/helm-cluster-api
     targetRevision: HEAD
   syncPolicy:
@@ -144,6 +144,6 @@ spec:
 
 It's a simple as:
 
-```shell
-make -e VERSION=v1.2.6
-```
+* Bump the versions in `Makefile`
+* Run `make`
+* Commit and release.

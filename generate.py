@@ -2,6 +2,7 @@
 
 import argparse
 import collections
+import os
 import re
 import subprocess
 import yaml
@@ -9,10 +10,30 @@ import yaml
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--chart', required=True, help='Chart name')
+    parser.add_argument('--version', required=True, help='Chart version')
+    parser.add_argument('--app-version', required=True, help='Application version')
     parser.add_argument('--path', required=True, help='Path to a directory containing customization.yaml')
 
     args = parser.parse_args()
 
+    # Define directory structure.
+    os.makedirs(f'{args.chart}/crds', exist_ok=True)
+    os.makedirs(f'{args.chart}/templates', exist_ok=True)
+
+    # Define chart description.
+    chart = {
+        'apiVersion': 'v2',
+        'name': args.chart,
+        'description': 'A Helm chart for deploying cluster API.',
+        'type': 'application',
+        'version': args.version,
+        'appVersion': args.app_version,
+    }
+
+    with open(f'{args.chart}/Chart.yaml', 'w') as out:
+        yaml.safe_dump(chart, out)
+
+    # Process the official manifests.
     content = subprocess.check_output(['kubectl', 'kustomize', args.path])
 
     objects = yaml.safe_load_all(content)
