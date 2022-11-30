@@ -10,13 +10,11 @@ This isn't compatible with ArgoCD for example, hence this project.
 In simple terms, we run `kubectl kustomize`, chop up the manifests and auto generate templates.
 When we encounter one of the annoying evironment variables, we replace it with Go templating, then add the replacement into `values.yaml`.
 
-## Using with ArgoCD
-
-### Prerequisites
+## Deploying Prerequisites
 
 This chart requires the following to be installed on the target cluster first:
 
-#### Cert-Manager
+### Cert-Manager
 
 <details>
 <summary>Helm</summary>
@@ -62,7 +60,7 @@ spec:
 ```
 </details>
 
-### One Ring To Rule Them All...
+## Deploying One-Shot
 
 There is a top level chart-of-charts that will just install everything as a big bang operation.
 
@@ -117,11 +115,11 @@ spec:
 ```
 </details>
 
-### Separate Deployments
+## Deploying Main Components
 
 You may want to be a little less gung-ho and deploy the pieces as separate applications.
 
-Deploy the core components:
+### Core
 
 <details>
 <summary>Helm</summary>
@@ -169,7 +167,7 @@ spec:
 ```
 </details>
 
-Deploy the boostrap components:
+### Bootstrap
 
 <details>
 <summary>Helm</summary>
@@ -210,7 +208,7 @@ spec:
 ```
 </details>
 
-Deploy the control plane components:
+### Control Plane
 
 <details>
 <summary>Helm</summary>
@@ -256,9 +254,11 @@ spec:
 ```
 </details>
 
+## Deploying Infrastructure Providers
+
 Add providers to allow CAPI to talk to various cloud providers.
 
-#### OpenStack
+### OpenStack
 
 <details>
 <summary>Helm</summary>
