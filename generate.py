@@ -17,7 +17,7 @@ def main():
 
     args = parser.parse_args()
 
-    chart_root = f'cluster-api/charts/{args.chart}'
+    chart_root = f'charts/{args.chart}'
 
     # Clean up so we don't leave any orphaned bits about.
     shutil.rmtree(chart_root)
