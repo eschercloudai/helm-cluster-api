@@ -2,7 +2,7 @@ openstack:
   # Name of the cloud in clouds.yaml.
   cloud:
   # cloud,yaml file, base64 encoded.
-  cloudYAML:
+  cloudsYAML:
   # External (public) network ID.
   externalNetworkID:
   # Kubelet openstack configuration, base64 encoded.
