@@ -14,6 +14,7 @@ def main():
     parser.add_argument('--version', required=True, help='Chart version')
     parser.add_argument('--app-version', required=True, help='Application version')
     parser.add_argument('--path', required=True, help='Path to a directory containing customization.yaml')
+    parser.add_argument('--image', required=True, help='Controller image')
 
     args = parser.parse_args()
 
@@ -46,7 +47,9 @@ def main():
 
     counts = collections.Counter()
 
-    values = {}
+    values = {
+            'image': args.image,
+    }
 
     for o in objects:
         kind = o['kind']
@@ -56,6 +59,10 @@ def main():
             with open(f'{chart_root}/crds/{o["metadata"]["name"]}.yaml', 'w') as out:
                 yaml.safe_dump(o, out)
             continue
+
+        # Patch some common overrides.
+        if kind == 'Deployment':
+            o['spec']['template']['spec']['containers'][0]['image'] = '{{ .Values.image }}'
 
         # Cluster API for some reason embed environment variables in their manifests
         # because why not, it's not like everyone else uses go templating!  Replace

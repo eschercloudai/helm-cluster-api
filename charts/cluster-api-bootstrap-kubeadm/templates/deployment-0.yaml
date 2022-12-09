@@ -26,7 +26,7 @@ spec:
         - --bootstrap-token-ttl={{ .Values.kubeadm_bootstrap_token_ttl }}
         command:
         - /manager
-        image: gcr.io/k8s-staging-cluster-api/kubeadm-bootstrap-controller:main
+        image: '{{ .Values.image }}'
         imagePullPolicy: Always
         livenessProbe:
           httpGet:

@@ -2,3 +2,4 @@ cluster_topology: false
 exp_cluster_resource_set: false
 exp_machine_pool: false
 exp_runtime_sdk: false
+image: registry.k8s.io/cluster-api/cluster-api-controller:v1.2.6
