@@ -1,0 +1,46 @@
+openstack:
+  # Name of the cloud in clouds.yaml.
+  cloud:
+  # cloud,yaml file, base64 encoded.
+  cloudYAML:
+  # External (public) network ID.
+  externalNetworkID:
+  # Kubelet openstack configuration, base64 encoded.
+  cloudProviderConfiguration:
+  # Openstack endpoint CA, base64 encoded.
+  ca:
+  # Openstack image name.
+  image:
+  # SSH key.
+  sshKeyName:
+  # Failure domain name.
+  failureDomain: nova
+
+kubernetes:
+  # Version of Kubernetes, should match that installed on the base images.
+  version: 1.25.2
+
+controlPlane:
+  # Number of control plane machines.
+  replicas: 3
+  # Control plane machine type.
+  flavor: m1.large
+
+workload:
+  # Number of workload machines.
+  replicas: 3
+  # Workload machine type.
+  flavor: m1.large
+
+network:
+  # Network prefix nodes will be allocated from.
+  nodeCIDR: 192.168.0.0/16
+  # Network prefixes service VIPs will be allocated from.
+  serviceCIDRs:
+  - 172.16.0.0/12
+  # Network prefixes pods will be allocated from.
+  podCIDRs:
+  - 10.0.0.0/8
+  # DNS nameservers to use.
+  dnsNameservers:
+  - 8.8.8.8
