@@ -70,7 +70,7 @@ There is a top level chart-of-charts that will just install everything as a big 
 ```shell
 helm repo add eschercloudai-capi https://eschercloudai.github.io/helm-cluster-api
 helm repo update
-helm install eschercloudai-capi/cluster-api --version v0.1.0
+helm install eschercloudai-capi/cluster-api --version v0.1.1
 ```
 </details>
 
@@ -88,7 +88,7 @@ spec:
   source:
     repoURL: https://eschercloudai.github.io/helm-cluster-api
     chart: cluster-api
-    targetRevision: v0.1.0
+    targetRevision: v0.1.1
   destination:
     server: https://172.18.255.200:443
   ignoreDifferences:
@@ -128,7 +128,7 @@ You may want to be a little less gung-ho and deploy the pieces as separate appli
 ```shell
 helm repo add eschercloudai-capi https://eschercloudai.github.io/helm-cluster-api
 helm repo update
-helm install eschercloudai-capi/cluster-api-core --version v0.1.0
+helm install eschercloudai-capi/cluster-api-core --version v0.1.1
 ```
 </details>
 
@@ -146,7 +146,7 @@ spec:
   source:
     repoURL: https://eschercloudai.github.io/helm-cluster-api
     chart: cluster-api-core
-    targetRevision: v0.1.0
+    targetRevision: v0.1.1
   destination:
     server: https://172.18.255.200:443
   ignoreDifferences:
@@ -177,7 +177,7 @@ spec:
 ```shell
 helm repo add eschercloudai-capi https://eschercloudai.github.io/helm-cluster-api
 helm repo update
-helm install eschercloudai-capi/cluster-api-bootstrap-kubeadm --version v0.1.0
+helm install eschercloudai-capi/cluster-api-bootstrap-kubeadm --version v0.1.1
 ```
 </details>
 
@@ -195,7 +195,7 @@ spec:
   source:
     repoURL: https://eschercloudai.github.io/helm-cluster-api
     chart: cluster-api-bootstrap-kubeadm
-    targetRevision: v0.1.0
+    targetRevision: v0.1.1
   destination:
     server: https://172.18.255.200:443
   ignoreDifferences:
@@ -219,7 +219,7 @@ spec:
 ```shell
 helm repo add eschercloudai-capi https://eschercloudai.github.io/helm-cluster-api
 helm repo update
-helm install eschercloudai-capi/cluster-api-control-plane-kubeadm --version v0.1.0
+helm install eschercloudai-capi/cluster-api-control-plane-kubeadm --version v0.1.1
 ```
 </details>
 
@@ -237,7 +237,7 @@ spec:
   source:
     repoURL: https://eschercloudai.github.io/helm-cluster-api
     chart: cluster-api-control-plane-kubeadm
-    targetRevision: v0.1.0
+    targetRevision: v0.1.1
   destination:
     server: https://172.18.255.200:443
   ignoreDifferences:
@@ -258,51 +258,14 @@ spec:
 ```
 </details>
 
-## Deploying Infrastructure Providers
+## Deploying Infrastructure Providers and Clusters
 
 Add providers to allow CAPI to talk to various cloud providers.
 
 ### OpenStack
 
-<details>
-<summary>Helm</summary>
-
-```shell
-helm repo add eschercloudai-capi https://eschercloudai.github.io/helm-cluster-api
-helm repo update
-helm install eschercloudai-capi/cluster-api-provider-openstack --version v0.1.0
-```
-</details>
-
-<details>
-<summary>ArgoCD</summary>
-
-```yaml
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  generateName: cluster-api-provider-openstack-
-  namespace: argocd
-spec:
-  project: default
-  source:
-    repoURL: https://eschercloudai.github.io/helm-cluster-api
-    chart: cluster-api-provider-openstack
-    targetRevision: v0.1.0
-  destination:
-    server: https://172.18.255.200:443
-  ignoreDifferences:
-  - group: apiextensions.k8s.io
-    jsonPointers:
-    - /spec/conversion/webhook/clientConfig/caBundle
-    kind: CustomResourceDefinition
-  syncPolicy:
-    automated:
-      selfHeal: true
-    syncOptions:
-    - RespectIgnoreDifferences=true
-```
-</details>
+* [Install the provider](charts/cluster-api-provider-openstack/README.md)
+* [Install a cluster](charts/cluster-api-cluster-openstack/README.md)
 
 ## Developers
 
