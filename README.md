@@ -310,4 +310,4 @@ It's a simple as:
 
 * Bump the versions in `Makefile` and `charts/cluster-api/Chart.yaml`
 * Run `make`
-* Commit and marge.
+* Commit and merge.
