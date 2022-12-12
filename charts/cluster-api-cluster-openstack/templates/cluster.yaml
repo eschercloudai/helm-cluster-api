@@ -5,7 +5,6 @@ metadata:
   name: {{ .Release.Name }}
   labels:
     {{- include "openstackcluster.labels" . | nindent 4 }}
-    argocd.argoproj.io/sync-wave: "1"
 spec:
   clusterNetwork:
     pods:
@@ -34,7 +33,6 @@ metadata:
   name: {{ .Release.Name }}
   labels:
     {{- include "openstackcluster.labels" . | nindent 4 }}
-    argocd.argoproj.io/sync-wave: "1"
 spec:
   cloudName: {{ .Values.openstack.cloud }}
   identityRef:
@@ -56,7 +54,6 @@ metadata:
   name: "{{ .Release.Name }}-control-plane"
   labels:
     {{- include "openstackcluster.labels" . | nindent 4 }}
-    argocd.argoproj.io/sync-wave: "1"
 spec:
   replicas: {{ .Values.controlPlane.replicas }}
   machineTemplate:
@@ -120,7 +117,6 @@ metadata:
   name: {{ .Release.Name }}-control-plane
   labels:
     {{- include "openstackcluster.labels" . | nindent 4 }}
-    argocd.argoproj.io/sync-wave: "1"
 spec:
   template:
     spec:
@@ -138,7 +134,6 @@ metadata:
   name: "{{ .Release.Name }}-md-0"
   labels:
     {{- include "openstackcluster.labels" . | nindent 4 }}
-    argocd.argoproj.io/sync-wave: "1"
 spec:
   clusterName: "{{ .Release.Name }}"
   replicas: {{ .Values.workload.replicas }}
@@ -165,7 +160,6 @@ metadata:
   name: {{ .Release.Name }}-md-0
   labels:
     {{- include "openstackcluster.labels" . | nindent 4 }}
-    argocd.argoproj.io/sync-wave: "1"
 spec:
   template:
     spec:
@@ -183,7 +177,6 @@ metadata:
   name: {{ .Release.Name }}-md-0
   labels:
     {{- include "openstackcluster.labels" . | nindent 4 }}
-    argocd.argoproj.io/sync-wave: "1"
 spec:
   template:
     spec:
@@ -212,9 +205,10 @@ metadata:
   labels:
     {{- include "openstackcluster.labels" . | nindent 4 }}
     clusterctl.cluster.x-k8s.io/move: "true"
+  annotations:
     # This needs to be preserved until the cluster has deprovisioned.
     # See: https://github.com/argoproj/argo-cd/issues/3211
-    argocd.argoproj.io/sync-wave: "0"
+    argocd.argoproj.io/sync-wave: "-1"
 data:
   clouds.yaml: {{ .Values.openstack.cloudsYAML }}
   cacert: {{ .Values.openstack.ca }}
