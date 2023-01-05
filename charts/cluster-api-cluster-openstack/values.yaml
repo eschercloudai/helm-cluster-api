@@ -20,11 +20,6 @@ openstack:
   # Openstack endpoint CA, base64 encoded.
   ca:
 
-  # Openstack image name.
-  # TODO: we should specify this, at the very least, for control planes and
-  # workload pools to enable staged upgrades.
-  image:
-
   # SSH key.
   sshKeyName:
 
@@ -38,30 +33,28 @@ openstack:
   # present.  Control plane nodes are deployed in this failure domain.
   failureDomain: nova
 
-# Kubernetes specific configuration.
-# Contains the cluster version and other API realted configuration.
-kubernetes:
-  # Version of Kubernetes, should match that installed on the base images.
-  # TODO: we should specify this, at the very least, for control planes and
-  # workload pools to enable staged upgrades.
-  version: v1.25.2
+# Kubernetes API specific configuration.
+api:
+  # Allow only the selected network address prefixes access to the API.
+  #
+  allowList:
+  - 192.168.0.1/24
 
-  # API configuration.
-  api:
-    # Allow only the selected network address prefixes access to the API.
-    #
-    # allowList:
-    # - 192.168.0.1/24
-
-    # Generate the API server certificate with a specific set of X.509
-    # subject alternative names, "localhost" and "127.0.0.1" are required
-    # by Kubernetes and added by default.
-    #
-    # certificateSANs:
-    # - foo.acme.com
+  # Generate the API server certificate with a specific set of X.509
+  # subject alternative names, "localhost" and "127.0.0.1" are required
+  # by Kubernetes and added by default.
+  #
+  certificateSANs:
+  - foo.acme.com
 
 # Control plane topology.
 controlPlane:
+  # Openstack image name.
+  image:
+
+  # Version of Kubernetes, should match that installed on the base images.
+  version: v1.25.2
+
   # Number of control plane machines.
   replicas: 3
 
@@ -76,6 +69,12 @@ controlPlane:
 workloadPools:
   # Pool name
   default:
+    # Openstack image name.
+    image:
+
+    # Version of Kubernetes, should match that installed on the base images.
+    version: v1.25.2
+
     # Number of workload machines.
     replicas: 0
 

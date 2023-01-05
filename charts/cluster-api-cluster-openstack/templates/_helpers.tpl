@@ -85,18 +85,18 @@ For some reason $.Values doesn't work in an included template so please
 see the logic in workload.yaml for seeding names, regions etc.
 */}}
 {{- define "openstack.nodelabels.workload" -}}
-{{- $pool := . -}}
-topology.{{ $pool.labelDomain }}/node-pool: {{ $pool.name }}
-topology.kubernetes.io/region: {{ $pool.region }}
-topology.kubernetes.io/zone: {{ $pool.failureDomain }}
-{{- with $autoscaling := .autoscaling }}
+{{- $context := . -}}
+topology.{{ .values.labelDomain }}/node-pool: {{ .pool.name }}
+topology.kubernetes.io/region: {{ .values.openstack.region }}
+topology.kubernetes.io/zone: {{ .pool.failureDomain | default .values.openstack.failureDomain }}
+{{- with $autoscaling := .pool.autoscaling }}
 {{- with $scheduler := $autoscaling.scheduler }}
 {{- with $gpu := $scheduler.gpu }}
-cluster-api/accelerator: {{ $pool.flavor }}
+cluster-api/accelerator: {{ $context.pool.flavor }}
 {{- end }}
 {{- end }}
 {{- end }}
-{{- range $key, $value := $pool.nodeLabels }}
+{{- range $key, $value := .pool.nodeLabels }}
 {{ $key }}: {{ $value }}
 {{- end }}
 {{- end }}
@@ -109,5 +109,12 @@ of which may not get added here, we try design the API in a way that we can just
 take a whole object and marshal it.
 */}}
 {{- define "openstack.discriminator.control-plane" -}}
-{{ (dict "openstack" .Values.openstack "kubernetes" .Values.kubernetes "controlPlane" .Values.controlPlane) | mustToJson | sha256sum | trunc 8 }}
+{{ (dict "openstack" .Values.openstack "api" .Values.api "pool" .Values.controlPlane) | mustToJson | sha256sum | trunc 8 }}
+{{- end }}
+
+{{/*
+Workload pool names.
+*/}}
+{{- define "openstack.discriminator.workload" -}}
+{{ (dict "openstack" $.values.openstack "pool" .pool) | mustToJson | sha256sum | trunc 8 }}
 {{- end }}

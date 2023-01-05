@@ -40,7 +40,7 @@ spec:
     kind: Secret
   apiServerLoadBalancer:
     enabled: true
-    {{- with $api := .Values.kubernetes.api }}
+    {{- with $api := .Values.api }}
       {{- with $allowList := $api.allowList }}
         {{- "allowedCidrs:" | nindent 4 }}
         {{- range $allowList }}

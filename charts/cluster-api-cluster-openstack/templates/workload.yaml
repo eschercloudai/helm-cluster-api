@@ -1,29 +1,22 @@
+{{ $values := .Values }}
 {{ range $name, $pool := .Values.workloadPools }}
 
 {{/*
 Helm is a bit crap in that $. doesn't work in an include with a non-global scope.
-To combat this, we merge the data we need to generate node labels etc. into the
-pool itself.  If you want to actually expose these names, you'll need to create
-a new dictionary data structure entirely.
+To combat this, we build a custom context before handing off to thte template.
 */}}
-{{ $pool = merge (deepCopy $pool) (dict "name" $name "region" $.Values.openstack.region "labelDomain" $.Values.labelDomain) }}
-{{ if empty $pool.failureDomain }}
-  {{ $pool = merge $pool (dict "failureDomain" $.Values.openstack.failureDomain) }}
-{{ end }}
+{{ $context := dict "name" $name "pool" $pool "values" $values }}
 
 {{/*
-Likewise when creating discriminators for resource names, we need access to global
-blobs of data.  Note here that we have to extract the kubernetes version from the
-full object, as this contains control plane bits, so perhaps it's a sign that we
-need to distinguish between shared and context specific.
+The resource names are common all over the place, so define in a canonical location.
 */}}
-{{ $discriminator := (dict "openstack" $.Values.openstack "version" $.Values.kubernetes.version "workload" $pool) | mustToJson | sha256sum | trunc 8 -}}
-
+{{ $pool_name := printf "%v-pool-%v" $.Release.Name $name }}
+{{ $pool_name_discriminated := printf "%v-pool-%v-%v" $.Release.Name $name (include "openstack.discriminator.workload" $context) }}
 ---
 apiVersion: cluster.x-k8s.io/v1beta1
 kind: MachineDeployment
 metadata:
-  name: {{ $.Release.Name }}-pool-{{ $name }}
+  name: {{ $pool_name }}
   labels:
     {{- include "openstackcluster.labels" $ | nindent 4 }}
   annotations:
@@ -36,22 +29,22 @@ spec:
   template:
     spec:
       clusterName: "{{ $.Release.Name }}"
-      version: "{{ $.Values.kubernetes.version }}"
+      version: "{{ $pool.version }}"
       failureDomain: {{ $.Values.openstack.failureDomain }}
       bootstrap:
         configRef:
-          name: "{{ $.Release.Name }}-pool-{{ $name }}-{{ $discriminator }}"
+          name: {{ $pool_name_discriminated }}
           apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
           kind: KubeadmConfigTemplate
       infrastructureRef:
-        name: "{{ $.Release.Name }}-pool-{{ $name }}-{{ $discriminator }}"
+        name: {{ $pool_name_discriminated }}
         apiVersion: infrastructure.cluster.x-k8s.io/v1alpha5
         kind: OpenStackMachineTemplate
 ---
 apiVersion: infrastructure.cluster.x-k8s.io/v1alpha5
 kind: OpenStackMachineTemplate
 metadata:
-  name: {{ $.Release.Name }}-pool-{{ $name }}-{{ $discriminator }}
+  name: {{ $pool_name_discriminated }}
   labels:
     {{- include "openstackcluster.labels" $ | nindent 4 }}
 spec:
@@ -62,7 +55,7 @@ spec:
         name: {{ $.Release.Name }}-cloud-config
         kind: Secret
       flavor: {{ $pool.flavor }}
-      image: {{ $.Values.openstack.image }}
+      image: {{ $pool.image }}
       sshKeyName: {{ $.Values.openstack.sshKeyName }}
       {{- if $pool.diskSize }}
       roolVolume:
@@ -72,7 +65,7 @@ spec:
 apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
 kind: KubeadmConfigTemplate
 metadata:
-  name: {{ $.Release.Name }}-pool-{{ $name }}-{{ $discriminator }}
+  name: {{ $pool_name_discriminated }}
   labels:
     {{- include "openstackcluster.labels" $ | nindent 4 }}
 spec:
@@ -103,5 +96,5 @@ spec:
             cloud-config: /etc/kubernetes/cloud.conf
             cloud-provider: openstack
             node-labels:
-              {{- include "openstack.nodelabels.workload" $pool | nindent 14 }}
+              {{- include "openstack.nodelabels.workload" $context | nindent 14 }}
 {{- end }}

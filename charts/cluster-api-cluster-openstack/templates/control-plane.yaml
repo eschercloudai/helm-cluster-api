@@ -35,7 +35,7 @@ spec:
         certSans:
         - localhost
         - 127.0.0.1
-        {{- with $api := .Values.kubernetes.api }}
+        {{- with $api := .Values.api }}
           {{- with $sans := $api.certificateSANs }}
             {{- range $sans }}
               {{- printf "- %s" . | nindent 8 }}
@@ -74,7 +74,7 @@ spec:
       permissions: "0600"
       content: {{ .Values.openstack.ca }}
       encoding: base64
-  version: "{{ .Values.kubernetes.version }}"
+  version: "{{ .Values.controlPlane.version }}"
 ---
 apiVersion: infrastructure.cluster.x-k8s.io/v1alpha5
 kind: OpenStackMachineTemplate
@@ -86,7 +86,7 @@ spec:
   template:
     spec:
       flavor: {{ .Values.controlPlane.flavor }}
-      image: {{ .Values.openstack.image }}
+      image: {{ .Values.controlPlane.image }}
       sshKeyName: {{ .Values.openstack.sshKeyName }}
       cloudName: {{ .Values.openstack.cloud }}
       identityRef:

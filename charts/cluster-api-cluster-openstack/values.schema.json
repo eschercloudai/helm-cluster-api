@@ -63,10 +63,18 @@
 		"machineSet": {
 			"type": "object",
 			"required": [
+				"version",
+				"image",
 				"replicas",
 				"flavor"
 			],
 			"properties": {
+				"version": {
+                                        "$ref": "#/$defs/semanticVersion"
+                                },
+				"image": {
+                                        "type": "string"
+                                },
 				"replicas": {
 					"$ref": "#/$defs/nonNegativeNumber"
 				},
@@ -156,7 +164,6 @@
 	"type": "object",
 	"required": [
 		"openstack",
-		"kubernetes",
 		"controlPlane",
 		"workloadPools",
 		"network"
@@ -170,7 +177,6 @@
 				"externalNetworkID",
 				"cloudProviderConfiguration",
 				"ca",
-				"image",
 				"sshKeyName",
 				"region",
 				"failureDomain"
@@ -191,9 +197,6 @@
                                 "ca": {
 					"$ref": "#/$defs/base64String"
                                 },
-                                "image": {
-                                        "type": "string"
-                                },
                                 "sshKeyName": {
                                         "type": "string"
                                 },
@@ -205,37 +208,26 @@
                                 }
 			}
 		},
-                "kubernetes": {
-			"type:": "object",
-			"required": [
-				"version"
-			],
+		"api": {
+			"type": "object",
 			"properties": {
-				"version": {
-					"$ref": "#/$defs/semanticVersion"
-                                },
-				"api": {
-					"type": "object",
-					"properties": {
-						"allowList": {
-							"$ref": "#/$defs/nonEmptyIPV4PrefixList"
-						},
-						"certificateSANs": {
-							"type": "array",
-							"minimumItems": 1,
-							"items": {
-								"anyOf": [
-									{
-										"type": "string",
-										"format": "ipv4"
-									},
-									{
-										"type": "string",
-										"format": "hostname"
-									}
-								]
+				"allowList": {
+					"$ref": "#/$defs/nonEmptyIPV4PrefixList"
+				},
+				"certificateSANs": {
+					"type": "array",
+					"minItems": 1,
+					"items": {
+						"anyOf": [
+							{
+								"type": "string",
+								"format": "ipv4"
+							},
+							{
+								"type": "string",
+								"format": "hostname"
 							}
-						}
+						]
 					}
 				}
 			}
