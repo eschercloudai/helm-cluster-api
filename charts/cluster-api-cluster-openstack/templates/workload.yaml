@@ -1,14 +1,29 @@
 {{ range $name, $pool := .Values.workloadPools }}
-{{/* Helm is a bit crap in that $. doesn't work in an include with a non-global scope */}}
+
+{{/*
+Helm is a bit crap in that $. doesn't work in an include with a non-global scope.
+To combat this, we merge the data we need to generate node labels etc. into the
+pool itself.  If you want to actually expose these names, you'll need to create
+a new dictionary data structure entirely.
+*/}}
 {{ $pool = merge (deepCopy $pool) (dict "name" $name "region" $.Values.openstack.region) }}
 {{ if empty $pool.failureDomain }}
   {{ $pool = merge $pool (dict "failureDomain" $.Values.openstack.failureDomain) }}
 {{ end }}
+
+{{/*
+Likewise when creating discriminators for resource names, we need access to global
+blobs of data.  Note here that we have to extract the kubernetes version from the
+full object, as this contains control plane bits, so perhaps it's a sign that we
+need to distinguish between shared and context specific.
+*/}}
+{{ $discriminator := (dict "openstack" $.Values.openstack "version" $.Values.kubernetes.version "workload" $pool) | mustToJson | sha256sum | trunc 8 -}}
+
 ---
 apiVersion: cluster.x-k8s.io/v1beta1
 kind: MachineDeployment
 metadata:
-  name: "{{ $.Release.Name }}-pool-{{ $name }}"
+  name: {{ $.Release.Name }}-pool-{{ $name }}
   labels:
     {{- include "openstackcluster.labels" $ | nindent 4 }}
   annotations:
@@ -25,18 +40,18 @@ spec:
       failureDomain: {{ $.Values.openstack.failureDomain }}
       bootstrap:
         configRef:
-          name: "{{ $.Release.Name }}-pool-{{ $name }}"
+          name: "{{ $.Release.Name }}-pool-{{ $name }}-{{ $discriminator }}"
           apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
           kind: KubeadmConfigTemplate
       infrastructureRef:
-        name: "{{ $.Release.Name }}-pool-{{ $name }}"
+        name: "{{ $.Release.Name }}-pool-{{ $name }}-{{ $discriminator }}"
         apiVersion: infrastructure.cluster.x-k8s.io/v1alpha5
         kind: OpenStackMachineTemplate
 ---
 apiVersion: infrastructure.cluster.x-k8s.io/v1alpha5
 kind: OpenStackMachineTemplate
 metadata:
-  name: {{ $.Release.Name }}-pool-{{ $name }}
+  name: {{ $.Release.Name }}-pool-{{ $name }}-{{ $discriminator }}
   labels:
     {{- include "openstackcluster.labels" $ | nindent 4 }}
 spec:
@@ -57,7 +72,7 @@ spec:
 apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
 kind: KubeadmConfigTemplate
 metadata:
-  name: {{ $.Release.Name }}-pool-{{ $name }}
+  name: {{ $.Release.Name }}-pool-{{ $name }}-{{ $discriminator }}
   labels:
     {{- include "openstackcluster.labels" $ | nindent 4 }}
 spec:

@@ -11,7 +11,7 @@ spec:
     infrastructureRef:
       kind: OpenStackMachineTemplate
       apiVersion: infrastructure.cluster.x-k8s.io/v1alpha5
-      name: "{{ .Release.Name }}-control-plane"
+      name: {{ .Release.Name }}-control-plane-{{ include "openstack.discriminator.control-plane" . }}
   kubeadmConfigSpec:
     initConfiguration:
       nodeRegistration:
@@ -79,7 +79,7 @@ spec:
 apiVersion: infrastructure.cluster.x-k8s.io/v1alpha5
 kind: OpenStackMachineTemplate
 metadata:
-  name: {{ .Release.Name }}-control-plane
+  name: {{ .Release.Name }}-control-plane-{{ include "openstack.discriminator.control-plane" . }}
   labels:
     {{- include "openstackcluster.labels" . | nindent 4 }}
 spec:

@@ -91,11 +91,16 @@ workloadPools:
     # # Node labels to apply to the pool.  The pool name will be applied
     # # automatically with the eschercloud.ai/node-pool label.  The failureDomain
     # # will be automatically added as the well known topology.kubernetes.io/zone
-    # # label.
+    # # label.  This should not be used, as it's trivial to just label nodes yourself
+    # # after provisioning, also a modification to this will result in an upgrade
+    # # of the cluster, which is dumb because you could have done it yourself
+    # # manually.
     # nodeLabels:
     #   group: foo
 
 # Kubernetes/OpenStack networking options.
+# Network options are immutable, changes will not result in
+# any modification to the cluster.
 network:
   # Network prefix nodes will be allocated from.
   nodeCIDR: 192.168.0.0/16

@@ -71,7 +71,7 @@ capacity.cluster-autoscaler.kubernetes.io/gpu-count: '{{ $gpu.count }}'
 {{- end }}
 
 {{/*
-Node labels
+Control plane node labels.
 */}}
 {{- define "openstack.nodelabels.control-plane" -}}
 eschercloud.ai/node-pool: control-plane
@@ -79,6 +79,11 @@ topology.kubernetes.io/region: {{ .Values.openstack.region }}
 topology.kubernetes.io/zone: {{ .Values.openstack.failureDomain }}
 {{- end }}
 
+{{/*
+Worker pool node labels.
+For some reason $.Values doesn't work in an included template so please
+see the logic in workload.yaml for seeding names, regions etc.
+*/}}
 {{- define "openstack.nodelabels.workload" -}}
 {{- $pool := . -}}
 eschercloud.ai/node-pool: {{ $pool.name }}
@@ -94,4 +99,15 @@ cluster-api/accelerator: {{ $pool.flavor }}
 {{- range $key, $value := $pool.nodeLabels }}
 {{ $key }}: {{ $value }}
 {{- end }}
+{{- end }}
+
+{{/*
+Control plane pool names.
+Many of the CAPI/CAPO resources are immutable and to trigger an upgrade we need
+to create new resources.  Rather than mess about with individual values, some
+of which may not get added here, we try design the API in a way that we can just
+take a whole object and marshal it.
+*/}}
+{{- define "openstack.discriminator.control-plane" -}}
+{{ (dict "openstack" .Values.openstack "kubernetes" .Values.kubernetes "controlPlane" .Values.controlPlane) | mustToJson | sha256sum | trunc 8 }}
 {{- end }}

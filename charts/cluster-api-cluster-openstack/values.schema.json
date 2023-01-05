@@ -5,6 +5,10 @@
 			"type": "number",
 			"minimum": 0
 		},
+		"base64string": {
+			"type": "string",
+			"contentEncoding": "base64"
+		},
 		"stringMap": {
 			"type": "object",
 			"additionalProperties": {
@@ -155,19 +159,19 @@
 			],
 			"properties": {
 				"cloud": {
-					"type": "string"
+                                        "type": "string"
 				},
                                 "cloudsYAML": {
-                                        "type": "string"
+					"$ref": "#/$defs/base64string"
                                 },
                                 "externalNetworkID": {
                                         "type": "string"
                                 },
                                 "cloudProviderConfiguration": {
-                                        "type": "string"
+					"$ref": "#/$defs/base64string"
                                 },
                                 "ca": {
-                                        "type": "string"
+					"$ref": "#/$defs/base64string"
                                 },
                                 "image": {
                                         "type": "string"
@@ -223,6 +227,7 @@
 		},
                 "workloadPools": {
 			"type:": "object",
+			"minProperties": 1,
 			"additionalProperties": {
 				"$ref": "#/$defs/machineSet"
 			}
