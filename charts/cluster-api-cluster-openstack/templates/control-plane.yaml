@@ -19,6 +19,8 @@ spec:
         kubeletExtraArgs:
           cloud-provider: openstack
           cloud-config: /etc/kubernetes/cloud.conf
+          node-labels:
+            {{- include "openstack.nodelabels.control-plane" . | nindent 12 }}
     clusterConfiguration:
       imageRepository: k8s.gcr.io
       apiServer:
@@ -59,6 +61,8 @@ spec:
         kubeletExtraArgs:
           cloud-config: /etc/kubernetes/cloud.conf
           cloud-provider: openstack
+          node-labels:
+            {{- include "openstack.nodelabels.control-plane" . | nindent 12 }}
     files:
     - path: /etc/kubernetes/cloud.conf
       owner: root

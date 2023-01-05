@@ -1,4 +1,9 @@
-{{- range $name, $pool := .Values.workloadPools }}
+{{ range $name, $pool := .Values.workloadPools }}
+{{/* Helm is a bit crap in that $. doesn't work in an include with a non-global scope */}}
+{{ $pool = merge (deepCopy $pool) (dict "name" $name "region" $.Values.openstack.region) }}
+{{ if empty $pool.failureDomain }}
+  {{ $pool = merge $pool (dict "failureDomain" $.Values.openstack.failureDomain) }}
+{{ end }}
 ---
 apiVersion: cluster.x-k8s.io/v1beta1
 kind: MachineDeployment
@@ -76,5 +81,5 @@ spec:
             cloud-config: /etc/kubernetes/cloud.conf
             cloud-provider: openstack
             node-labels:
-              {{- include "openstack.workload.nodelabels" $pool | nindent 14 }}
+              {{- include "openstack.nodelabels.workload" $pool | nindent 14 }}
 {{- end }}

@@ -5,6 +5,12 @@
 			"type": "number",
 			"minimum": 0
 		},
+		"stringMap": {
+			"type": "object",
+			"additionalProperties": {
+				"type": "string"
+			}
+		},
 		"ipv4": {
 			"type": "string",
 			"format": "ipv4"
@@ -118,6 +124,9 @@
 				},
 				"diskSize": {
 					"$ref": "#/$defs/nonNegativeNumber"
+				},
+				"nodeLabels": {
+					"$ref": "#/$defs/stringMap"
 				}
 			}
 		}
@@ -141,6 +150,7 @@
 				"ca",
 				"image",
 				"sshKeyName",
+				"region",
 				"failureDomain"
 			],
 			"properties": {
@@ -165,6 +175,9 @@
                                 "sshKeyName": {
                                         "type": "string"
                                 },
+				"region": {
+					"type": "string"
+				},
                                 "failureDomain": {
                                         "type": "string"
                                 }

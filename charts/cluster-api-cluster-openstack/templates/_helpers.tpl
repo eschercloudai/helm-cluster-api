@@ -73,13 +73,25 @@ capacity.cluster-autoscaler.kubernetes.io/gpu-count: '{{ $gpu.count }}'
 {{/*
 Node labels
 */}}
-{{- define "openstack.workload.nodelabels" -}}
-{{- $pool := . }}
+{{- define "openstack.nodelabels.control-plane" -}}
+eschercloud.ai/node-pool: control-plane
+topology.kubernetes.io/region: {{ .Values.openstack.region }}
+topology.kubernetes.io/zone: {{ .Values.openstack.failureDomain }}
+{{- end }}
+
+{{- define "openstack.nodelabels.workload" -}}
+{{- $pool := . -}}
+eschercloud.ai/node-pool: {{ $pool.name }}
+topology.kubernetes.io/region: {{ $pool.region }}
+topology.kubernetes.io/zone: {{ $pool.failureDomain }}
 {{- with $autoscaling := .autoscaling }}
 {{- with $scheduler := $autoscaling.scheduler }}
-{{- with $gpu := $scheduler.gpu -}}
+{{- with $gpu := $scheduler.gpu }}
 cluster-api/accelerator: {{ $pool.flavor }}
 {{- end }}
 {{- end }}
+{{- end }}
+{{- range $key, $value := $pool.nodeLabels }}
+{{ $key }}: {{ $value }}
 {{- end }}
 {{- end }}
