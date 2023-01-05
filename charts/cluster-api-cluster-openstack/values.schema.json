@@ -5,7 +5,7 @@
 			"type": "number",
 			"minimum": 0
 		},
-		"base64string": {
+		"base64String": {
 			"type": "string",
 			"contentEncoding": "base64"
 		},
@@ -131,6 +131,24 @@
 				},
 				"nodeLabels": {
 					"$ref": "#/$defs/stringMap"
+				},
+				"files": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"required": [
+							"path",
+							"content"
+						],
+						"properties": {
+							"path": {
+								"type": "string"
+							},
+							"content": {
+								"$ref": "#/$defs/base64String"
+							}
+						}
+					}
 				}
 			}
 		}
@@ -162,16 +180,16 @@
                                         "type": "string"
 				},
                                 "cloudsYAML": {
-					"$ref": "#/$defs/base64string"
+					"$ref": "#/$defs/base64String"
                                 },
                                 "externalNetworkID": {
                                         "type": "string"
                                 },
                                 "cloudProviderConfiguration": {
-					"$ref": "#/$defs/base64string"
+					"$ref": "#/$defs/base64String"
                                 },
                                 "ca": {
-					"$ref": "#/$defs/base64string"
+					"$ref": "#/$defs/base64String"
                                 },
                                 "image": {
                                         "type": "string"

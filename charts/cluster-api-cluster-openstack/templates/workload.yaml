@@ -6,7 +6,7 @@ To combat this, we merge the data we need to generate node labels etc. into the
 pool itself.  If you want to actually expose these names, you'll need to create
 a new dictionary data structure entirely.
 */}}
-{{ $pool = merge (deepCopy $pool) (dict "name" $name "region" $.Values.openstack.region) }}
+{{ $pool = merge (deepCopy $pool) (dict "name" $name "region" $.Values.openstack.region "labelDomain" $.Values.labelDomain) }}
 {{ if empty $pool.failureDomain }}
   {{ $pool = merge $pool (dict "failureDomain" $.Values.openstack.failureDomain) }}
 {{ end }}
@@ -89,6 +89,13 @@ spec:
         owner: root
         path: /etc/certs/cacert
         permissions: "0600"
+      {{- range $file := $pool.files }}
+      - content: {{ $file.content }}
+        encoding: base64
+        owner: root
+        path: {{ $file.path }}
+        permissions: "0600"
+      {{- end }}
       joinConfiguration:
         nodeRegistration:
           name: {{ "'{{ local_hostname }}'" }}

@@ -1,52 +1,73 @@
+# Label domain for implicit labels defined in this chart.
+labelDomain: eschercloud.ai
+
 # OpenStack specific configuration.
 # Contains credentials for the cloud, networking options and
 # other OpenStack specific configuration.
 openstack:
   # Name of the cloud in clouds.yaml.
   cloud:
+
   # cloud.yaml file, base64 encoded.
   cloudsYAML:
+
   # External (public) network ID.
   externalNetworkID:
+
   # Kubelet openstack configuration, base64 encoded.
   cloudProviderConfiguration:
+
   # Openstack endpoint CA, base64 encoded.
   ca:
+
   # Openstack image name.
+  # TODO: we should specify this, at the very least, for control planes and
+  # workload pools to enable staged upgrades.
   image:
+
   # SSH key.
   sshKeyName:
+
   # Region defines the topology region.
   # This will be applied as the topology.kubernetes.io/region label
   # to all nodes.
-  region: eu-west-1
+  region: nl1
+
   # Global failure domain name.  Workload pools can be distributed
   # across multiple failure domains, but default to this if not
-  # present.
+  # present.  Control plane nodes are deployed in this failure domain.
   failureDomain: nova
 
 # Kubernetes specific configuration.
 # Contains the cluster version and other API realted configuration.
 kubernetes:
   # Version of Kubernetes, should match that installed on the base images.
+  # TODO: we should specify this, at the very least, for control planes and
+  # workload pools to enable staged upgrades.
   version: v1.25.2
+
   # API configuration.
-  # api:
-  #   # Allow only the selected network address prefixes access to the API.
-  #   allowList:
-  #   - 192.168.0.1/24
-  #   # Generate the API server certificate with a specific set of X.509
-  #   # subject alternative names, "localhost" and "127.0.0.1" are required
-  #   # by Kubernetes and added by default.
-  #   certificateSANs:
-  #   - foo.acme.com
+  api:
+    # Allow only the selected network address prefixes access to the API.
+    #
+    # allowList:
+    # - 192.168.0.1/24
+
+    # Generate the API server certificate with a specific set of X.509
+    # subject alternative names, "localhost" and "127.0.0.1" are required
+    # by Kubernetes and added by default.
+    #
+    # certificateSANs:
+    # - foo.acme.com
 
 # Control plane topology.
 controlPlane:
   # Number of control plane machines.
   replicas: 3
+
   # Control plane machine type.
   flavor: m1.large
+
   # Ephemeral disk size in GB.  If specified this overrides the default
   # size for the flavor.
   diskSize: 80
@@ -57,6 +78,7 @@ workloadPools:
   default:
     # Number of workload machines.
     replicas: 0
+
     # Enable or disable cluster autoscaling.
     autoscaling:
       # Set the scaling limits.
@@ -64,8 +86,10 @@ workloadPools:
       limits:
         # Minimum number of replicas.
         minReplicas: 0
+
         # Maximum number of replicas.
         maxReplicas: 10
+
       # Set the scaler scheduling hints.
       # These are only required when using scale-from-zero support
       # as cluster-autoscaler is unable to determine these values without
@@ -73,30 +97,48 @@ workloadPools:
       scheduler:
         # Number of CPU cores.
         cpu: 4
+
         # Amount of memory.
         memory: 32G
+
         # Whether a GPU is present or not.
         gpu:
           # The GPU type.
           type: nvidia.com/gpu
+
           # The number of GPUs.
           count: 1
+
     # Workload machine type.
     flavor: m1.large
+
     # Ephemeral disk size in GB.  If specified this overrides the default
     # size for the flavor.
     diskSize: 160
-    # # Failure domain to provision the pool in, defaults to openstack.failureDomain.
+
+    # Failure domain to provision the pool in, defaults to openstack.failureDomain.
+    #
     # failureDomain: nova
-    # # Node labels to apply to the pool.  The pool name will be applied
-    # # automatically with the eschercloud.ai/node-pool label.  The failureDomain
-    # # will be automatically added as the well known topology.kubernetes.io/zone
-    # # label.  This should not be used, as it's trivial to just label nodes yourself
-    # # after provisioning, also a modification to this will result in an upgrade
-    # # of the cluster, which is dumb because you could have done it yourself
-    # # manually.
+
+    # Node labels to apply to the pool.  The pool name will be applied
+    # automatically with the $(labelDomain)/node-pool label.  The failureDomain
+    # will be automatically added as the well known "topology.kubernetes.io/zone"
+    # label along with the "topology.kubernetes.io/region" label.  This should not
+    # really be used, as it's trivial to just label nodes yourself after provisioning,
+    # also a modification to this will result in an upgrade of the cluster, which you
+    # could have done manually.
+    #
     # nodeLabels:
     #   group: foo
+
+    # Files to include on the machine.  These are limited to base64 encoded,
+    # root owned and readable at present.  Like node labels above, the cloud
+    # native way of doing this is just to use a daemonset or some other controller
+    # rather than backdoor injection.
+    #
+    # files:
+    # - path: /etc/cat
+    #   content: bWVvdw==
 
 # Kubernetes/OpenStack networking options.
 # Network options are immutable, changes will not result in
@@ -104,12 +146,15 @@ workloadPools:
 network:
   # Network prefix nodes will be allocated from.
   nodeCIDR: 192.168.0.0/16
+
   # Network prefixes service VIPs will be allocated from.
   serviceCIDRs:
   - 172.16.0.0/12
+
   # Network prefixes pods will be allocated from.
   podCIDRs:
   - 10.0.0.0/8
+
   # DNS nameservers to use.
   dnsNameservers:
   - 8.8.8.8
