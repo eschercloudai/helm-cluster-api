@@ -1,0 +1,241 @@
+{
+	"$schema": "https://json-schema.org/draft-07/schema#",
+	"$defs": {
+		"nonNegativeNumber": {
+			"type": "number",
+			"minimum": 0
+		},
+		"ipv4": {
+			"type": "string",
+			"format": "ipv4"
+		},
+		"nonEmptyIPV4List": {
+			"type": "array",
+			"minItems": 1,
+			"items": {
+				"$ref": "#/$defs/ipv4"
+			}
+		},
+		"ipv4Prefix": {
+			"type": "string",
+			"pattern": "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])\\/(?:3[0-2]|[1-2]?[0-9])$"
+		},
+		"nonEmptyIPV4PrefixList": {
+			"type": "array",
+			"minItems": 1,
+			"items": {
+				"$ref": "#/$defs/ipv4Prefix"
+			}
+		},
+		"serverSAN": {
+			"anyOf": [
+				{
+					"type": "string",
+					"format": "ipv4"
+				},
+				{
+					"type": "string",
+					"format": "hostname"
+				}
+			]
+		},
+		"nonEmptyServerSANList": {
+			"type": "array",
+			"minItems": 1,
+			"items": {
+				"$ref": "#/$defs/serverSAN"
+			}
+		},
+		"semanticVersion": {
+			"type": "string",
+			"pattern": "v\\d+\\.\\d+\\.\\d+"
+		},
+		"machineSet": {
+			"type": "object",
+			"required": [
+				"replicas",
+				"flavor"
+			],
+			"properties": {
+				"replicas": {
+					"$ref": "#/$defs/nonNegativeNumber"
+				},
+				"autoscaling": {
+					"type": "object",
+					"required": [
+						"limits"
+					],
+					"properties": {
+						"limits": {
+							"type": "object",
+							"required": [
+								"minReplicas",
+								"maxReplicas"
+							],
+							"properties": {
+								"minReplicas": {
+									"$ref": "#/$defs/nonNegativeNumber"
+								},
+								"maxReplicas": {
+									"$ref": "#/$defs/nonNegativeNumber"
+								}
+							}
+						},
+						"scheduler": {
+							"type": "object",
+							"required": [
+								"cpu",
+								"memory"
+							],
+							"properties": {
+								"cpu": {
+									"$ref": "#/$defs/nonNegativeNumber"
+								},
+								"memory": {
+									"type": "string"
+								},
+								"gpu": {
+									"type": "object",
+									"required": [
+										"type",
+										"count"
+									],
+									"properties": {
+										"type": {
+											"type": "string"
+										},
+										"count": {
+											"$ref": "#/$defs/nonNegativeNumber"
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"flavor": {
+					"type": "string"
+				},
+				"diskSize": {
+					"$ref": "#/$defs/nonNegativeNumber"
+				}
+			}
+		}
+	},
+	"type": "object",
+	"required": [
+		"openstack",
+		"kubernetes",
+		"controlPlane",
+		"workloadPools",
+		"network"
+	],
+	"properties": {
+		"openstack": {
+			"type:": "object",
+			"required": [
+				"cloud",
+				"cloudsYAML",
+				"externalNetworkID",
+				"cloudProviderConfiguration",
+				"ca",
+				"image",
+				"sshKeyName",
+				"failureDomain"
+			],
+			"properties": {
+				"cloud": {
+					"type": "string"
+				},
+                                "cloudsYAML": {
+                                        "type": "string"
+                                },
+                                "externalNetworkID": {
+                                        "type": "string"
+                                },
+                                "cloudProviderConfiguration": {
+                                        "type": "string"
+                                },
+                                "ca": {
+                                        "type": "string"
+                                },
+                                "image": {
+                                        "type": "string"
+                                },
+                                "sshKeyName": {
+                                        "type": "string"
+                                },
+                                "failureDomain": {
+                                        "type": "string"
+                                }
+			}
+		},
+                "kubernetes": {
+			"type:": "object",
+			"required": [
+				"version"
+			],
+			"properties": {
+				"version": {
+					"$ref": "#/$defs/semanticVersion"
+                                },
+				"api": {
+					"type": "object",
+					"properties": {
+						"allowList": {
+							"$ref": "#/$defs/nonEmptyIPV4PrefixList"
+						},
+						"certificateSANs": {
+							"type": "array",
+							"minimumItems": 1,
+							"items": {
+								"anyOf": [
+									{
+										"type": "string",
+										"format": "ipv4"
+									},
+									{
+										"type": "string",
+										"format": "hostname"
+									}
+								]
+							}
+						}
+					}
+				}
+			}
+		},
+                "controlPlane": {
+			"$ref": "#/$defs/machineSet"
+		},
+                "workloadPools": {
+			"type:": "object",
+			"additionalProperties": {
+				"$ref": "#/$defs/machineSet"
+			}
+		},
+                "network": {
+			"type:": "object",
+			"required": [
+				"nodeCIDR",
+				"serviceCIDRs",
+				"podCIDRs",
+				"dnsNameservers"
+			],
+			"properties": {
+				"nodeCIDR": {
+					"$ref": "#/$defs/ipv4Prefix"
+				},
+                                "serviceCIDRs": {
+					"$ref": "#/$defs/nonEmptyIPV4PrefixList"
+                                },
+                                "podCIDRs": {
+					"$ref": "#/$defs/nonEmptyIPV4PrefixList"
+                                },
+                                "dnsNameservers": {
+					"$ref": "#/$defs/nonEmptyIPV4List"
+                                }
+			}
+		}
+	}
+}

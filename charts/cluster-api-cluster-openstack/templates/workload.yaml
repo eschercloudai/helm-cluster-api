@@ -1,0 +1,80 @@
+{{- range $name, $pool := .Values.workloadPools }}
+---
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: MachineDeployment
+metadata:
+  name: "{{ $.Release.Name }}-pool-{{ $name }}"
+  labels:
+    {{- include "openstackcluster.labels" $ | nindent 4 }}
+  annotations:
+    {{- include "openstackcluster.autoscalingAnnotations" $pool | nindent 4 }}
+spec:
+  clusterName: "{{ $.Release.Name }}"
+  replicas: {{ $pool.replicas }}
+  selector:
+    matchLabels:
+  template:
+    spec:
+      clusterName: "{{ $.Release.Name }}"
+      version: "{{ $.Values.kubernetes.version }}"
+      failureDomain: {{ $.Values.openstack.failureDomain }}
+      bootstrap:
+        configRef:
+          name: "{{ $.Release.Name }}-pool-{{ $name }}"
+          apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
+          kind: KubeadmConfigTemplate
+      infrastructureRef:
+        name: "{{ $.Release.Name }}-pool-{{ $name }}"
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha5
+        kind: OpenStackMachineTemplate
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha5
+kind: OpenStackMachineTemplate
+metadata:
+  name: {{ $.Release.Name }}-pool-{{ $name }}
+  labels:
+    {{- include "openstackcluster.labels" $ | nindent 4 }}
+spec:
+  template:
+    spec:
+      cloudName: {{ $.Values.openstack.cloud }}
+      identityRef:
+        name: {{ $.Release.Name }}-cloud-config
+        kind: Secret
+      flavor: {{ $pool.flavor }}
+      image: {{ $.Values.openstack.image }}
+      sshKeyName: {{ $.Values.openstack.sshKeyName }}
+      {{- if $pool.diskSize }}
+      roolVolume:
+        diskSize: {{ $pool.diskSize }}
+      {{- end }}
+---
+apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
+kind: KubeadmConfigTemplate
+metadata:
+  name: {{ $.Release.Name }}-pool-{{ $name }}
+  labels:
+    {{- include "openstackcluster.labels" $ | nindent 4 }}
+spec:
+  template:
+    spec:
+      files:
+      - content: {{ $.Values.openstack.cloudProviderConfiguration }}
+        encoding: base64
+        owner: root
+        path: /etc/kubernetes/cloud.conf
+        permissions: "0600"
+      - content: {{ $.Values.openstack.ca }}
+        encoding: base64
+        owner: root
+        path: /etc/certs/cacert
+        permissions: "0600"
+      joinConfiguration:
+        nodeRegistration:
+          name: {{ "'{{ local_hostname }}'" }}
+          kubeletExtraArgs:
+            cloud-config: /etc/kubernetes/cloud.conf
+            cloud-provider: openstack
+            node-labels:
+              {{- include "openstack.workload.nodelabels" $pool | nindent 14 }}
+{{- end }}

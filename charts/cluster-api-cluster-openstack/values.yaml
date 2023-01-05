@@ -1,7 +1,8 @@
+# Openstack specific configuration.
 openstack:
   # Name of the cloud in clouds.yaml.
   cloud:
-  # cloud,yaml file, base64 encoded.
+  # cloud.yaml file, base64 encoded.
   cloudsYAML:
   # External (public) network ID.
   externalNetworkID:
@@ -18,19 +19,61 @@ openstack:
 
 kubernetes:
   # Version of Kubernetes, should match that installed on the base images.
-  version: 1.25.2
+  version: v1.25.2
+  # API configuration.
+  # api:
+  #   # Allow only the selected network address prefixes access to the API.
+  #   allowList:
+  #   - 192.168.0.1/24
+  #   # Generate the API server certificate with a specific set of X.509
+  #   # subject alternative names, "localhost" and "127.0.0.1" are required
+  #   # by Kubernetes and added by default.
+  #   certificateSANs:
+  #   - foo.acme.com
 
 controlPlane:
   # Number of control plane machines.
   replicas: 3
   # Control plane machine type.
   flavor: m1.large
+  # Ephemeral disk size in GB.  If specified this overrides the default
+  # size for the flavor.
+  diskSize: 80
 
-workload:
-  # Number of workload machines.
-  replicas: 3
-  # Workload machine type.
-  flavor: m1.large
+workloadPools:
+  # Pool name
+  default:
+    # Number of workload machines.
+    replicas: 0
+    # Enable or disable cluster autoscaling.
+    autoscaling:
+      # Set the scaling limits.
+      # Limits are required by cluster-autoscaler.
+      limits:
+        # Minimum number of replicas.
+        minReplicas: 0
+        # Maximum number of replicas.
+        maxReplicas: 10
+      # Set the scaler scheduling hints.
+      # These are only required when using scale-from-zero support
+      # as cluster-autoscaler is unable to determine these values without
+      # an active node.
+      scheduler:
+        # Number of CPU cores.
+        cpu: 4
+        # Amount of memory.
+        memory: 32G
+        # Whether a GPU is present or not.
+        gpu:
+          # The GPU type.
+          type: nvidia.com/gpu
+          # The number of GPUs.
+          count: 1
+    # Workload machine type.
+    flavor: m1.large
+    # Ephemeral disk size in GB.  If specified this overrides the default
+    # size for the flavor.
+    diskSize: 160
 
 network:
   # Network prefix nodes will be allocated from.

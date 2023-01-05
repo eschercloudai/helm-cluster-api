@@ -49,3 +49,37 @@ Selector labels
 app.kubernetes.io/name: {{ include "openstackcluster.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+{{/*
+Autoscaling annotations
+*/}}
+{{- define "openstackcluster.autoscalingAnnotations" -}}
+{{- with $autoscaling := .autoscaling }}
+{{- with $limits := $autoscaling.limits -}}
+cluster.x-k8s.io/cluster-api-autoscaler-node-group-min-size: '{{ $limits.minReplicas }}'
+cluster.x-k8s.io/cluster-api-autoscaler-node-group-max-size: '{{ $limits.maxReplicas }}'
+{{- end }}
+{{- with $scheduler := $autoscaling.scheduler }}
+capacity.cluster-autoscaler.kubernetes.io/cpu: '{{ $scheduler.cpu }}'
+capacity.cluster-autoscaler.kubernetes.io/memory: {{ $scheduler.memory }}
+{{- with $gpu := $scheduler.gpu }}
+capacity.cluster-autoscaler.kubernetes.io/gpu-type: {{ $gpu.type }}
+capacity.cluster-autoscaler.kubernetes.io/gpu-count: '{{ $gpu.count }}'
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{/*
+Node labels
+*/}}
+{{- define "openstack.workload.nodelabels" -}}
+{{- $pool := . }}
+{{- with $autoscaling := .autoscaling }}
+{{- with $scheduler := $autoscaling.scheduler }}
+{{- with $gpu := $scheduler.gpu -}}
+cluster-api/accelerator: {{ $pool.flavor }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
