@@ -2,8 +2,9 @@
 labelDomain: eschercloud.ai
 
 # OpenStack specific configuration.
-# Contains credentials for the cloud, networking options and
-# other OpenStack specific configuration.
+# Contains credentials for the cloud, networking options and other
+# OpenStack specific configuration.
+# Modifications to this object will trigger a control plane upgrade.
 openstack:
   # Name of the cloud in clouds.yaml.
   cloud:
@@ -34,6 +35,7 @@ openstack:
   failureDomain: nova
 
 # Kubernetes API specific configuration.
+# Modifications to this object will trigger a control plane upgrade.
 api:
   # Allow only the selected network address prefixes access to the API.
   #
@@ -48,6 +50,7 @@ api:
   - foo.acme.com
 
 # Control plane topology.
+# Modifications to this object will trigger a control plane upgrade.
 controlPlane:
   # Openstack image name.
   image:
@@ -66,6 +69,7 @@ controlPlane:
   diskSize: 80
 
 # Workload pools topology.
+# Modifications to these objects will trigger a affected workload pool upgrades.
 workloadPools:
   # Pool name
   default:
@@ -119,7 +123,7 @@ workloadPools:
     #
     # failureDomain: nova
 
-    # Node labels to apply to the pool.  The pool name will be applied
+    # Labels to apply to the pool nodes.  The pool name will be applied
     # automatically with the $(labelDomain)/node-pool label.  The failureDomain
     # will be automatically added as the well known "topology.kubernetes.io/zone"
     # label along with the "topology.kubernetes.io/region" label.  This should not
@@ -127,7 +131,7 @@ workloadPools:
     # also a modification to this will result in an upgrade of the cluster, which you
     # could have done manually.
     #
-    # nodeLabels:
+    # labels:
     #   group: foo
 
     # Files to include on the machine.  These are limited to base64 encoded,

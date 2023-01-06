@@ -74,9 +74,10 @@ capacity.cluster-autoscaler.kubernetes.io/gpu-count: '{{ $gpu.count }}'
 Control plane node labels.
 */}}
 {{- define "openstack.nodelabels.control-plane" -}}
-topology.{{ .Values.labelDomain }}/node-pool: control-plane
-topology.kubernetes.io/region: {{ .Values.openstack.region }}
-topology.kubernetes.io/zone: {{ .Values.openstack.failureDomain }}
+{{- $labels := list (printf "topology.%s/node-pool=control-plane" .Values.labelDomain) }}
+{{- $labels = append $labels (printf "topology.kubernetes.io/region=%s" .Values.openstack.region) }}
+{{- $labels = append $labels (printf "topology.kubernetes.io/zone=%s" .Values.openstack.failureDomain) }}
+{{- join "," $labels }}
 {{- end }}
 
 {{/*
@@ -85,20 +86,21 @@ For some reason $.Values doesn't work in an included template so please
 see the logic in workload.yaml for seeding names, regions etc.
 */}}
 {{- define "openstack.nodelabels.workload" -}}
-{{- $context := . -}}
-topology.{{ .values.labelDomain }}/node-pool: {{ .pool.name }}
-topology.kubernetes.io/region: {{ .values.openstack.region }}
-topology.kubernetes.io/zone: {{ .pool.failureDomain | default .values.openstack.failureDomain }}
+{{- $context := . }}
+{{- $labels := list (printf "topology.%s/node-pool=%s" .values.labelDomain .name) }}
+{{- $labels = append $labels (printf "topology.kubernetes.io/region=%s" .values.openstack.region) }}
+{{- $labels = append $labels (printf "topology.kubernetes.io/zone=%s" (include "openstack.failureDomain.workload" .)) }}
 {{- with $autoscaling := .pool.autoscaling }}
-{{- with $scheduler := $autoscaling.scheduler }}
-{{- with $gpu := $scheduler.gpu }}
-cluster-api/accelerator: {{ $context.pool.flavor }}
+  {{- with $scheduler := $autoscaling.scheduler }}
+    {{- with $gpu := $scheduler.gpu }}
+      {{- $labels = append $labels (printf "cluster-api/accelerator=%s" $context.pool.flavor) }}
+    {{- end }}
+  {{- end }}
 {{- end }}
+{{- range $key, $value := .pool.labels }}
+  {{- $labels = append $labels (printf "%s=%s" $key $value) }}
 {{- end }}
-{{- end }}
-{{- range $key, $value := .pool.nodeLabels }}
-{{ $key }}: {{ $value }}
-{{- end }}
+{{- join "," $labels }}
 {{- end }}
 
 {{/*

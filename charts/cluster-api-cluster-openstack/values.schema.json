@@ -137,7 +137,7 @@
 				"diskSize": {
 					"$ref": "#/$defs/nonNegativeNumber"
 				},
-				"nodeLabels": {
+				"labels": {
 					"$ref": "#/$defs/stringMap"
 				},
 				"files": {
@@ -163,12 +163,16 @@
 	},
 	"type": "object",
 	"required": [
+		"labelDomain",
 		"openstack",
 		"controlPlane",
 		"workloadPools",
 		"network"
 	],
 	"properties": {
+		"labelDomain": {
+			"type": "string"
+		},
 		"openstack": {
 			"type:": "object",
 			"required": [
