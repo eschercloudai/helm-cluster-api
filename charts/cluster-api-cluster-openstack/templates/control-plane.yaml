@@ -17,22 +17,13 @@ spec:
       nodeRegistration:
         name: {{ "'{{ local_hostname }}'" }}
         kubeletExtraArgs:
-          cloud-provider: openstack
-          cloud-config: /etc/kubernetes/cloud.conf
-          node-labels:
-            {{- include "openstack.nodelabels.control-plane" . | nindent 12 }}
+          cloud-provider: external
+          node-labels: {{- include "openstack.nodelabels.control-plane" . | nindent 12 }}
     clusterConfiguration:
-      imageRepository: k8s.gcr.io
       apiServer:
         extraArgs:
-          cloud-provider: openstack
-          cloud-config: /etc/kubernetes/cloud.conf
-        extraVolumes:
-        - name: cloud
-          hostPath: /etc/kubernetes/cloud.conf
-          mountPath: /etc/kubernetes/cloud.conf
-          readOnly: true
-        certSans:
+          cloud-provider: external
+        certSANs:
         - localhost
         - 127.0.0.1
         {{- with $api := .Values.api }}
@@ -44,17 +35,7 @@ spec:
         {{- end }}
       controllerManager:
         extraArgs:
-          cloud-provider: openstack
-          cloud-config: /etc/kubernetes/cloud.conf
-        extraVolumes:
-        - name: cloud
-          hostPath: /etc/kubernetes/cloud.conf
-          mountPath: /etc/kubernetes/cloud.conf
-          readOnly: true
-        - name: cacerts
-          hostPath: /etc/certs/cacert
-          mountPath: /etc/certs/cacert
-          readOnly: true
+          cloud-provider: external
       etcd:
         local:
           extraArgs:
@@ -67,21 +48,8 @@ spec:
       nodeRegistration:
         name: {{ "'{{ local_hostname }}'" }}
         kubeletExtraArgs:
-          cloud-config: /etc/kubernetes/cloud.conf
-          cloud-provider: openstack
-          node-labels:
-            {{- include "openstack.nodelabels.control-plane" . | nindent 12 }}
-    files:
-    - path: /etc/kubernetes/cloud.conf
-      owner: root
-      permissions: "0600"
-      content: {{ .Values.openstack.cloudProviderConfiguration }}
-      encoding: base64
-    - path: /etc/certs/cacert
-      owner: root
-      permissions: "0600"
-      content: {{ .Values.openstack.ca }}
-      encoding: base64
+          cloud-provider: external
+          node-labels: {{- include "openstack.nodelabels.control-plane" . | nindent 12 }}
   version: "{{ .Values.controlPlane.version }}"
 ---
 apiVersion: infrastructure.cluster.x-k8s.io/v1alpha5

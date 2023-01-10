@@ -179,7 +179,6 @@
 				"cloud",
 				"cloudsYAML",
 				"externalNetworkID",
-				"cloudProviderConfiguration",
 				"ca",
 				"sshKeyName",
 				"region",
@@ -194,9 +193,6 @@
                                 },
                                 "externalNetworkID": {
                                         "type": "string"
-                                },
-                                "cloudProviderConfiguration": {
-					"$ref": "#/$defs/base64String"
                                 },
                                 "ca": {
 					"$ref": "#/$defs/base64String"

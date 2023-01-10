@@ -72,16 +72,6 @@ spec:
   template:
     spec:
       files:
-      - content: {{ $.Values.openstack.cloudProviderConfiguration }}
-        encoding: base64
-        owner: root
-        path: /etc/kubernetes/cloud.conf
-        permissions: "0600"
-      - content: {{ $.Values.openstack.ca }}
-        encoding: base64
-        owner: root
-        path: /etc/certs/cacert
-        permissions: "0600"
       {{- range $file := $pool.files }}
       - content: {{ $file.content }}
         encoding: base64
@@ -93,8 +83,6 @@ spec:
         nodeRegistration:
           name: {{ "'{{ local_hostname }}'" }}
           kubeletExtraArgs:
-            cloud-config: /etc/kubernetes/cloud.conf
-            cloud-provider: openstack
-            node-labels:
-              {{- include "openstack.nodelabels.workload" $context | nindent 14 }}
+            cloud-provider: external
+            node-labels: {{- include "openstack.nodelabels.workload" $context | nindent 14 }}
 {{- end }}
