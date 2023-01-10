@@ -39,7 +39,7 @@ spec:
       # Remove the default work queue.
       parameters:
       - name: workload.default
-	value: null
+        value: null
       values: |-
         openstack:
           cloud: REDACTED
