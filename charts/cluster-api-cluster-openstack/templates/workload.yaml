@@ -58,7 +58,8 @@ spec:
       image: {{ $pool.image }}
       sshKeyName: {{ $.Values.openstack.sshKeyName }}
       {{- if $pool.diskSize }}
-      roolVolume:
+      rootVolume:
+        availabilityZone: {{ include "openstack.failureDomain.workload" $context }}
         diskSize: {{ $pool.diskSize }}
       {{- end }}
 ---

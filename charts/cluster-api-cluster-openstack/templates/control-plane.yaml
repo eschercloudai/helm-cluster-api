@@ -69,6 +69,7 @@ spec:
         name: {{ .Release.Name }}-cloud-config
         kind: Secret
       {{- if .Values.controlPlane.diskSize }}
-      roolVolume:
+      rootVolume:
+        availabilityZone: {{ .Values.openstack.failureDomain }}
         diskSize: {{ .Values.controlPlane.diskSize }}
       {{- end }}
