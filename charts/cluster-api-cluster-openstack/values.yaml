@@ -45,15 +45,15 @@ cluster:
 api:
   # Allow only the selected network address prefixes access to the API.
   #
-  allowList:
-  - 192.168.0.1/24
+  # allowList:
+  # - 192.168.0.1/24
 
   # Generate the API server certificate with a specific set of X.509
   # subject alternative names, "localhost" and "127.0.0.1" are required
   # by Kubernetes and added by default.
   #
-  certificateSANs:
-  - foo.acme.com
+  # certificateSANs:
+  # - foo.acme.com
 
 # Control plane topology.
 # Modifications to this object will trigger a control plane upgrade.
