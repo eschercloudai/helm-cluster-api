@@ -1,0 +1,89 @@
+{{ $values := .Values }}
+{{ range $name, $pool := .Values.workloadPools }}
+
+{{/*
+Helm is a bit crap in that $. doesn't work in an include with a non-global scope.
+To combat this, we build a custom context before handing off to thte template.
+*/}}
+{{ $context := dict "name" $name "pool" $pool "values" $values }}
+
+{{/*
+The resource names are common all over the place, so define in a canonical location.
+*/}}
+{{ $pool_name := printf "%v-pool-%v" $.Release.Name $name }}
+{{ $pool_name_discriminated := printf "%v-pool-%v-%v" $.Release.Name $name (include "openstack.discriminator.workload" $context) }}
+---
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: MachineDeployment
+metadata:
+  name: {{ $pool_name }}
+  labels:
+    {{- include "openstackcluster.labels" $ | nindent 4 }}
+  annotations:
+    {{- include "openstackcluster.autoscalingAnnotations" $pool | nindent 4 }}
+spec:
+  clusterName: "{{ $.Release.Name }}"
+  replicas: {{ $pool.replicas }}
+  selector:
+    matchLabels:
+  template:
+    spec:
+      clusterName: "{{ $.Release.Name }}"
+      version: "{{ $pool.version }}"
+      failureDomain: {{ $.Values.openstack.failureDomain }}
+      bootstrap:
+        configRef:
+          name: {{ $pool_name_discriminated }}
+          apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
+          kind: KubeadmConfigTemplate
+      infrastructureRef:
+        name: {{ $pool_name_discriminated }}
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha5
+        kind: OpenStackMachineTemplate
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha5
+kind: OpenStackMachineTemplate
+metadata:
+  name: {{ $pool_name_discriminated }}
+  labels:
+    {{- include "openstackcluster.labels" $ | nindent 4 }}
+spec:
+  template:
+    spec:
+      cloudName: {{ $.Values.openstack.cloud }}
+      identityRef:
+        name: {{ $.Release.Name }}-cloud-config
+        kind: Secret
+      flavor: {{ $pool.flavor }}
+      image: {{ $pool.image }}
+      sshKeyName: {{ $.Values.openstack.sshKeyName }}
+      {{- if $pool.diskSize }}
+      rootVolume:
+        availabilityZone: {{ include "openstack.failureDomain.workload" $context }}
+        diskSize: {{ $pool.diskSize }}
+      {{- end }}
+---
+apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
+kind: KubeadmConfigTemplate
+metadata:
+  name: {{ $pool_name_discriminated }}
+  labels:
+    {{- include "openstackcluster.labels" $ | nindent 4 }}
+spec:
+  template:
+    spec:
+      files:
+      {{- range $file := $pool.files }}
+      - content: {{ $file.content }}
+        encoding: base64
+        owner: root
+        path: {{ $file.path }}
+        permissions: "0600"
+      {{- end }}
+      joinConfiguration:
+        nodeRegistration:
+          name: {{ "'{{ local_hostname }}'" }}
+          kubeletExtraArgs:
+            cloud-provider: external
+            node-labels: {{- include "openstack.nodelabels.workload" $context | nindent 14 }}
+{{- end }}
