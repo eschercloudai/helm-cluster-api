@@ -42,7 +42,8 @@ cluster:
 
 # Kubernetes API specific configuration.
 # Modifications to this object will trigger a control plane upgrade.
-api:
+#
+# api:
   # Allow only the selected network address prefixes access to the API.
   #
   # allowList:
