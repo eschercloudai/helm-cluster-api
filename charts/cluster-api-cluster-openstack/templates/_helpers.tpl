@@ -127,3 +127,38 @@ Workload pool names.
 {{- define "openstack.discriminator.workload" -}}
 {{ (dict "openstack" $.values.openstack "pool" .pool) | mustToJson | sha256sum | trunc 8 }}
 {{- end }}
+
+{{/*
+Taints
+*/}}
+{{- define "openstack.taints.control-plane" -}}
+- key: node-role.kubernetes.io/master
+  effect: NoSchedule
+- key: node-role.kubernetes.io/control-plane
+  effect: NoSchedule
+{{- with $cluster := .Values.cluster }}
+{{- with $taints := $cluster.taints }}
+{{- range $taint := $taints }}
+- key: {{ $taint.key }}
+  effect: {{ $taint.effect }}
+{{- if .value }}
+  value: '{{ $taint.value }}'
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{- define "openstack.taints.workload" -}}
+{{- with $cluster := .Values.cluster }}
+{{- with $taints := $cluster.taints }}
+{{- range $taint := $taints }}
+- key: {{ $taint.key }}
+  effect: {{ $taint.effect }}
+{{- if .value }}
+  value: '{{ $taint.value }}'
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

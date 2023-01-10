@@ -60,6 +60,30 @@
 			"type": "string",
 			"pattern": "v\\d+\\.\\d+\\.\\d+"
 		},
+		"taint": {
+			"type": "object",
+			"required": [
+				"key",
+				"effect"
+			],
+			"properties": {
+				"key": {
+					"type": "string"
+				},
+				"effect": {
+					"type": "string"
+				},
+				"value": {
+					"type": "string"
+				}
+			}
+		},
+		"taintList": {
+			"type": "array",
+			"items": {
+				"$ref": "#/$defs/taint"
+			}
+		},
 		"machineSet": {
 			"type": "object",
 			"required": [
@@ -206,6 +230,14 @@
                                 "failureDomain": {
                                         "type": "string"
                                 }
+			}
+		},
+		"cluster": {
+			"type": "object",
+			"properties": {
+				"taints": {
+					"$ref": "#/$defs/taintList"
+				}
 			}
 		},
 		"api": {

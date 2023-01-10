@@ -86,4 +86,6 @@ spec:
           kubeletExtraArgs:
             cloud-provider: external
             node-labels: {{- include "openstack.nodelabels.workload" $context | nindent 14 }}
+          taints:
+            {{- include "openstack.taints.workload" $ | nindent 10 }}
 {{- end }}
