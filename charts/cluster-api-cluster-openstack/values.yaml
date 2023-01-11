@@ -7,19 +7,19 @@ labelDomain: eschercloud.ai
 # Modifications to this object will trigger a control plane upgrade.
 openstack:
   # Name of the cloud in clouds.yaml.
-  cloud:
+  cloud: my-cloud
 
   # cloud.yaml file, base64 encoded.
-  cloudsYAML:
+  cloudsYAML: Y2hhbmdlIG1lIQ==
 
   # External (public) network ID.
-  externalNetworkID:
+  externalNetworkID: b19ce45a-3278-48e4-8a0e-83100af68778
 
   # Openstack endpoint CA, base64 encoded.
-  ca:
+  ca: Y2hhbmdlIG1lIQ==
 
   # SSH key.
-  sshKeyName:
+  sshKeyName: foo
 
   # Region defines the topology region.
   # This will be applied as the topology.kubernetes.io/region label
@@ -32,9 +32,9 @@ openstack:
   failureDomain: nova
 
 # Cluster wide configuration.
-cluster:
+#
+# cluster:
   # Applies taints to all nodes e.g.
-  #
   # taints:
   # - key: node.cilium.io/agent-not-ready
   #   effect: NoSchedule
@@ -44,23 +44,21 @@ cluster:
 # Modifications to this object will trigger a control plane upgrade.
 #
 # api:
-  # Allow only the selected network address prefixes access to the API.
-  #
-  # allowList:
-  # - 192.168.0.1/24
-
-  # Generate the API server certificate with a specific set of X.509
-  # subject alternative names, "localhost" and "127.0.0.1" are required
-  # by Kubernetes and added by default.
-  #
-  # certificateSANs:
-  # - foo.acme.com
+#  # Allow only the selected network address prefixes access to the API.
+#  allowList:
+#  - 192.168.0.1/24
+#
+#  # Generate the API server certificate with a specific set of X.509
+#  # subject alternative names, "localhost" and "127.0.0.1" are required
+#  # by Kubernetes and added by default.
+#  certificateSANs:
+#  - foo.acme.com
 
 # Control plane topology.
 # Modifications to this object will trigger a control plane upgrade.
 controlPlane:
   # Openstack image name.
-  image:
+  image: ubuntu-2204-kubernetes-1.25.0
 
   # Version of Kubernetes, should match that installed on the base images.
   version: v1.25.2
@@ -80,44 +78,12 @@ controlPlane:
 workloadPools:
   # Pool name
   default:
-    # Openstack image name.
-    image:
-
-    # Version of Kubernetes, should match that installed on the base images.
+    # Version of Kubernetes, should match that installed on the base images
+    # in order to improve provisioning and scaling time.
     version: v1.25.2
 
-    # Number of workload machines.
-    replicas: 0
-
-    # Enable or disable cluster autoscaling.
-    autoscaling:
-      # Set the scaling limits.
-      # Limits are required by cluster-autoscaler.
-      limits:
-        # Minimum number of replicas.
-        minReplicas: 0
-
-        # Maximum number of replicas.
-        maxReplicas: 10
-
-      # Set the scaler scheduling hints.
-      # These are only required when using scale-from-zero support
-      # as cluster-autoscaler is unable to determine these values without
-      # an active node.
-      scheduler:
-        # Number of CPU cores.
-        cpu: 4
-
-        # Amount of memory.
-        memory: 32G
-
-        # Whether a GPU is present or not.
-        gpu:
-          # The GPU type.
-          type: nvidia.com/gpu
-
-          # The number of GPUs.
-          count: 1
+    # Openstack image name.
+    image: ubuntu-2204-kubernetes-1.25.0
 
     # Workload machine type.
     flavor: m1.large
@@ -125,6 +91,9 @@ workloadPools:
     # Ephemeral disk size in GB.  If specified this overrides the default
     # size for the flavor.
     diskSize: 160
+
+    # Number of workload machines.
+    replicas: 3
 
     # Failure domain to provision the pool in, defaults to openstack.failureDomain.
     #
@@ -149,6 +118,37 @@ workloadPools:
     # files:
     # - path: /etc/cat
     #   content: bWVvdw==
+
+    # Enable or disable cluster autoscaling.
+    # autoscaling:
+    #   # Set the scaling limits.
+    #   # Limits are required by cluster-autoscaler.
+    #   limits:
+    #     # Minimum number of replicas.
+    #     minReplicas: 0
+    #
+    #     # Maximum number of replicas.
+    #     maxReplicas: 10
+    #
+    #   # Set the scaler scheduling hints.
+    #   # These are only required when using scale-from-zero support
+    #   # as cluster-autoscaler is unable to determine these values without
+    #   # an active node.
+    #   # scheduler:
+    #     # Number of CPU cores.
+    #     cpu: 4
+    #
+    #     # Amount of memory.
+    #     memory: 32G
+    #
+    #     # Whether a GPU is present or not.
+    #     gpu:
+    #       # The GPU type.
+    #       type: nvidia.com/gpu
+    #
+    #       # The number of GPUs.
+    #       count: 1
+
 
 # Kubernetes/OpenStack networking options.
 # Network options are immutable, changes will not result in

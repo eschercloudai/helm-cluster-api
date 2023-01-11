@@ -1,0 +1,3 @@
+Cluster API is now Installed!
+
+See https://github.com/eschercloudai/helm-cluster-api#deploying-infrastructure-providers-and-clusters to deploy a cluster.

@@ -1,5 +1,5 @@
 # Update this for every tagged release.
-CHART_VERSION = v0.1.1
+CHART_VERSION = v0.1.2
 
 # Defines the versions to use for cluster API components.
 CAPI_VERSION = v1.2.6
@@ -10,6 +10,11 @@ CHARTS = cluster-api-core \
 	 cluster-api-bootstrap-kubeadm \
 	 cluster-api-control-plane-kubeadm \
 	 cluster-api-provider-openstack
+
+# These charts are hand crafted, but still valid for things like
+# validation.
+USER_CHARTS = cluster-api \
+	      cluster-api-cluster-openstack
 
 # Generator script location.
 GENERATE = ./generate.py
@@ -35,11 +40,8 @@ cluster-api-provider-openstack:
 .PHONY: test
 test:
 	set -e; \
-	for chart in $(CHARTS); do \
-		helm lint charts/$${chart}; \
+	for chart in $(CHARTS) $(USER_CHARTS); do \
+		helm dependency update charts/$${chart}; \
+		helm lint --strict charts/$${chart}; \
 		helm template charts/$${chart} > /dev/null; \
 	done
-	set -e; \
-	helm dependency update charts/cluster-api; \
-	helm lint charts/cluster-api; \
-	helm template charts/cluster-api > /dev/null
