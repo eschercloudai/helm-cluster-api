@@ -84,12 +84,11 @@
 				"$ref": "#/$defs/taint"
 			}
 		},
-		"machineSet": {
+		"machine": {
 			"type": "object",
 			"required": [
 				"version",
 				"image",
-				"replicas",
 				"flavor"
 			],
 			"properties": {
@@ -99,8 +98,29 @@
 				"image": {
                                         "type": "string"
                                 },
+				"flavor": {
+                                        "type": "string"
+                                },
+                                "diskSize": {
+                                        "$ref": "#/$defs/nonNegativeNumber"
+                                },
+				"failureDomain": {
+					"type": "string"
+				}
+			}
+		},
+		"workloadMachineSet": {
+			"type": "object",
+			"required": [
+				"replicas",
+				"machine"
+			],
+			"properties": {
 				"replicas": {
 					"$ref": "#/$defs/nonNegativeNumber"
+				},
+				"machine": {
+					"$ref": "#/$defs/machine"
 				},
 				"autoscaling": {
 					"type": "object",
@@ -154,15 +174,6 @@
 							}
 						}
 					}
-				},
-				"flavor": {
-					"type": "string"
-				},
-				"diskSize": {
-					"$ref": "#/$defs/nonNegativeNumber"
-				},
-				"labels": {
-					"$ref": "#/$defs/stringMap"
 				},
 				"files": {
 					"type": "array",
@@ -265,13 +276,25 @@
 			}
 		},
                 "controlPlane": {
-			"$ref": "#/$defs/machineSet"
+			"type": "object",
+			"required": [
+				"replicas",
+				"machine"
+			],
+			"properties": {
+				"replicas": {
+					"$ref": "#/$defs/nonNegativeNumber"
+				},
+				"machine": {
+					"$ref": "#/$defs/machine"
+				}
+			}
 		},
                 "workloadPools": {
 			"type:": "object",
 			"minProperties": 1,
 			"additionalProperties": {
-				"$ref": "#/$defs/machineSet"
+				"$ref": "#/$defs/workloadMachineSet"
 			}
 		},
                 "network": {

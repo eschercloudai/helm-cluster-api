@@ -65,15 +65,15 @@ metadata:
 spec:
   template:
     spec:
-      flavor: {{ .Values.controlPlane.flavor }}
-      image: {{ .Values.controlPlane.image }}
+      flavor: {{ .Values.controlPlane.machine.flavor }}
+      image: {{ .Values.controlPlane.machine.image }}
       sshKeyName: {{ .Values.openstack.sshKeyName }}
       cloudName: {{ .Values.openstack.cloud }}
       identityRef:
         name: {{ .Release.Name }}-cloud-config
         kind: Secret
-      {{- if .Values.controlPlane.diskSize }}
+      {{- if .Values.controlPlane.machine.diskSize }}
       rootVolume:
         availabilityZone: {{ .Values.openstack.failureDomain }}
-        diskSize: {{ .Values.controlPlane.diskSize }}
+        diskSize: {{ .Values.controlPlane.machine.diskSize }}
       {{- end }}
