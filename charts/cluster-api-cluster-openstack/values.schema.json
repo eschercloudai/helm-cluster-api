@@ -87,14 +87,10 @@
 		"machine": {
 			"type": "object",
 			"required": [
-				"version",
 				"image",
 				"flavor"
 			],
 			"properties": {
-				"version": {
-                                        "$ref": "#/$defs/semanticVersion"
-                                },
 				"image": {
                                         "type": "string"
                                 },
@@ -112,10 +108,14 @@
 		"workloadMachineSet": {
 			"type": "object",
 			"required": [
+				"version",
 				"replicas",
 				"machine"
 			],
 			"properties": {
+				"version": {
+                                        "$ref": "#/$defs/semanticVersion"
+                                },
 				"replicas": {
 					"$ref": "#/$defs/nonNegativeNumber"
 				},
@@ -174,6 +174,9 @@
 							}
 						}
 					}
+				},
+				"labels": {
+					"$ref": "#/$defs/stringMap"
 				},
 				"files": {
 					"type": "array",
@@ -278,10 +281,14 @@
                 "controlPlane": {
 			"type": "object",
 			"required": [
+				"version",
 				"replicas",
 				"machine"
 			],
 			"properties": {
+				"version": {
+                                        "$ref": "#/$defs/semanticVersion"
+                                },
 				"replicas": {
 					"$ref": "#/$defs/nonNegativeNumber"
 				},
