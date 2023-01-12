@@ -3,8 +3,7 @@ labelDomain: eschercloud.ai
 
 # OpenStack specific configuration.
 # Contains credentials for the cloud, networking options and other
-# OpenStack specific configuration.
-# Modifications to this object will trigger a control plane upgrade.
+# Values in this object are considered immutable.
 openstack:
   # Name of the cloud in clouds.yaml.
   cloud: my-cloud
@@ -34,14 +33,14 @@ openstack:
 # Cluster wide configuration.
 #
 # cluster:
-  # Applies taints to all nodes e.g.
+  # Applies taints to all nodes on creation.  Once a node is provisioned you
+  # will need to manually update these.
   # taints:
   # - key: node.cilium.io/agent-not-ready
   #   effect: NoSchedule
   #   value: 'true'
 
 # Kubernetes API specific configuration.
-# Modifications to this object will trigger a control plane upgrade.
 #
 # api:
 #  # Allow only the selected network address prefixes access to the API.
@@ -51,75 +50,81 @@ openstack:
 #  # Generate the API server certificate with a specific set of X.509
 #  # subject alternative names, "localhost" and "127.0.0.1" are required
 #  # by Kubernetes and added by default.
+#  # Modifications to this list will trigger a control plane upgrade.
 #  certificateSANs:
 #  - foo.acme.com
 
 # Control plane topology.
 # Modifications to this object will trigger a control plane upgrade.
 controlPlane:
-  # Openstack image name.
-  image: ubuntu-2204-kubernetes-1.25.0
-
-  # Version of Kubernetes, should match that installed on the base images.
-  version: v1.25.2
-
   # Number of control plane machines.
   replicas: 3
 
-  # Control plane machine type.
-  flavor: m1.large
-
-  # Ephemeral disk size in GB.  If specified this overrides the default
-  # size for the flavor.
-  diskSize: 80
-
-# Workload pools topology.
-# Modifications to these objects will trigger a affected workload pool upgrades.
-workloadPools:
-  # Pool name
-  default:
-    # Version of Kubernetes, should match that installed on the base images
-    # in order to improve provisioning and scaling time.
-    version: v1.25.2
-
+  # Defines the physical properties of a machine.
+  # Modifications to this object will trigger a control plane upgrade.
+  machine:
     # Openstack image name.
     image: ubuntu-2204-kubernetes-1.25.0
 
-    # Workload machine type.
+    # Version of Kubernetes, should match that installed on the base images.
+    version: v1.25.2
+
+    # Control plane machine type.
     flavor: m1.large
 
     # Ephemeral disk size in GB.  If specified this overrides the default
     # size for the flavor.
-    diskSize: 160
+    diskSize: 80
 
+# Workload pools topology.
+workloadPools:
+  # Pool name
+  default:
     # Number of workload machines.
     replicas: 3
 
-    # Failure domain to provision the pool in, defaults to openstack.failureDomain.
-    #
-    # failureDomain: nova
+    # Defines the physical properties of a machine.
+    # Modifications to these objects will trigger a affected workload pool upgrades.
+    machine:
+      # Version of Kubernetes, should match that installed on the base images
+      # in order to improve provisioning and scaling time.
+      version: v1.25.2
+
+      # Openstack image name.
+      image: ubuntu-2204-kubernetes-1.25.0
+
+      # Workload machine type.
+      flavor: m1.large
+
+      # Ephemeral disk size in GB.  If specified this overrides the default
+      # size for the flavor.
+      diskSize: 160
+
+      # Failure domain to provision the pool in, defaults to openstack.failureDomain.
+      #
+      # failureDomain: nova
 
     # Labels to apply to the pool nodes.  The pool name will be applied
     # automatically with the $(labelDomain)/node-pool label.  The failureDomain
     # will be automatically added as the well known "topology.kubernetes.io/zone"
-    # label along with the "topology.kubernetes.io/region" label.  This should not
-    # really be used, as it's trivial to just label nodes yourself after provisioning,
-    # also a modification to this will result in an upgrade of the cluster, which you
-    # could have done manually.
+    # label along with the "topology.kubernetes.io/region" label.  This is only
+    # intended for use on initial node bring up and will not trigger a rolling
+    # upgrade.
     #
     # labels:
     #   group: foo
 
     # Files to include on the machine.  These are limited to base64 encoded,
-    # root owned and readable at present.  Like node labels above, the cloud
-    # native way of doing this is just to use a daemonset or some other controller
-    # rather than backdoor injection.
+    # root owned and readable at present.  Like node labels above, this is only
+    # intended for use on initial node bring up and will not trigger a rolling
+    # upgrade.
     #
     # files:
     # - path: /etc/cat
     #   content: bWVvdw==
 
     # Enable or disable cluster autoscaling.
+    # This object is considered immutable.
     # autoscaling:
     #   # Set the scaling limits.
     #   # Limits are required by cluster-autoscaler.
@@ -153,6 +158,7 @@ workloadPools:
 # Kubernetes/OpenStack networking options.
 # Network options are immutable, changes will not result in
 # any modification to the cluster.
+# This object is considered immutable.
 network:
   # Network prefix nodes will be allocated from.
   nodeCIDR: 192.168.0.0/16

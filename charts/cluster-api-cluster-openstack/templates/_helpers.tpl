@@ -74,7 +74,7 @@ capacity.cluster-autoscaler.kubernetes.io/gpu-count: '{{ $gpu.count }}'
 Workload failure domain.
 */}}
 {{- define "openstack.failureDomain.workload" -}}
-{{ .pool.failureDomain | default .values.openstack.failureDomain }}
+{{ .pool.machine.failureDomain | default .values.openstack.failureDomain }}
 {{- end }}
 
 {{/*
@@ -117,15 +117,23 @@ to create new resources.  Rather than mess about with individual values, some
 of which may not get added here, we try design the API in a way that we can just
 take a whole object and marshal it.
 */}}
+{{- define "openstack.discriminator.control-plane.api" -}}
+{{- $value := dict }}
+{{- with $api := .Values.api }}
+{{- $value = set $value "certificateSANs" $api.certificateSANs }}
+{{- end }}
+{{ $value | mustToJson | sha256sum }}
+{{- end }}
+
 {{- define "openstack.discriminator.control-plane" -}}
-{{ (dict "openstack" .Values.openstack "api" .Values.api "pool" .Values.controlPlane) | mustToJson | sha256sum | trunc 8 }}
+{{ (dict "api" (include "openstack.discriminator.control-plane.api" .) "pool" .Values.controlPlane.machine) | mustToJson | sha256sum | trunc 8 }}
 {{- end }}
 
 {{/*
 Workload pool names.
 */}}
 {{- define "openstack.discriminator.workload" -}}
-{{ (dict "openstack" $.values.openstack "pool" .pool) | mustToJson | sha256sum | trunc 8 }}
+{{ (dict "pool" .pool.machine) | mustToJson | sha256sum | trunc 8 }}
 {{- end }}
 
 {{/*

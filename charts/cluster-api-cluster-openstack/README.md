@@ -60,18 +60,20 @@ spec:
           certificateSANs:
           - kubernetes.my-domain.com
         controlPlane:
-          version:  v1.25.4
-          image: ubu2204-v1.25.5-9d105bc5
-          flavor: g.4.standard
-          diskSize: 40
           replicas: 3
-        workloadPools:
-          general-purpose:
+          machine:
             version:  v1.25.4
             image: ubu2204-v1.25.5-9d105bc5
             flavor: g.4.standard
-            diskSize: 100
+            diskSize: 40
+        workloadPools:
+          general-purpose:
             replicas: 3
+            machine:
+              version:  v1.25.4
+              image: ubu2204-v1.25.5-9d105bc5
+              flavor: g.4.standard
+              diskSize: 100
             autoscaling:
               limits:
                 minReplicas: 3
@@ -80,11 +82,12 @@ spec:
                 cpu: 4
                 memory: 16G
           gpu:
-            version: v1.25.4
-            image: ubu2204-v1.25.5-gpu-510.73.08-2cbfe3d7
-            flavor: g.4.highmem.a100.1g.10gb
-            diskSize: 100
             replicas: 3
+            machine:
+              version: v1.25.4
+              image: ubu2204-v1.25.5-gpu-510.73.08-2cbfe3d7
+              flavor: g.4.highmem.a100.1g.10gb
+              diskSize: 100
             autoscaling:
               limits:
                 minReplicas: 3
