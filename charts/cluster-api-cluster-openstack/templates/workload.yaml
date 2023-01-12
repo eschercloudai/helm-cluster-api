@@ -30,7 +30,7 @@ spec:
     spec:
       clusterName: "{{ $.Release.Name }}"
       version: "{{ $pool.version }}"
-      failureDomain: {{ $.Values.openstack.failureDomain }}
+      failureDomain: {{ include "openstack.failureDomain.workload" $context }}
       bootstrap:
         configRef:
           name: {{ $pool_name_discriminated }}

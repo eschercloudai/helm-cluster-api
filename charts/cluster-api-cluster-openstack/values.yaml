@@ -57,6 +57,9 @@ openstack:
 # Control plane topology.
 # Modifications to this object will trigger a control plane upgrade.
 controlPlane:
+  # Version of Kubernetes, should match that installed on the base images.
+  version: v1.25.2
+
   # Number of control plane machines.
   replicas: 3
 
@@ -65,9 +68,6 @@ controlPlane:
   machine:
     # Openstack image name.
     image: ubuntu-2204-kubernetes-1.25.0
-
-    # Version of Kubernetes, should match that installed on the base images.
-    version: v1.25.2
 
     # Control plane machine type.
     flavor: m1.large
@@ -80,16 +80,16 @@ controlPlane:
 workloadPools:
   # Pool name
   default:
+    # Version of Kubernetes, should match that installed on the base images
+    # in order to improve provisioning and scaling time.
+    version: v1.25.2
+
     # Number of workload machines.
     replicas: 3
 
     # Defines the physical properties of a machine.
     # Modifications to these objects will trigger a affected workload pool upgrades.
     machine:
-      # Version of Kubernetes, should match that installed on the base images
-      # in order to improve provisioning and scaling time.
-      version: v1.25.2
-
       # Openstack image name.
       image: ubuntu-2204-kubernetes-1.25.0
 
