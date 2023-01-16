@@ -100,7 +100,7 @@ see the logic in workload.yaml for seeding names, regions etc.
 {{- with $autoscaling := .pool.autoscaling }}
   {{- with $scheduler := $autoscaling.scheduler }}
     {{- with $gpu := $scheduler.gpu }}
-      {{- $labels = append $labels (printf "cluster-api/accelerator=%s" $context.pool.flavor) }}
+      {{- $labels = append $labels (printf "cluster-api/accelerator=%s" $context.pool.machine.flavor) }}
     {{- end }}
   {{- end }}
 {{- end }}
