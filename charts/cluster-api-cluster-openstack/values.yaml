@@ -18,7 +18,8 @@ openstack:
   ca: Y2hhbmdlIG1lIQ==
 
   # SSH key.
-  sshKeyName: foo
+  #
+  # sshKeyName: foo
 
   # Global failure domain name.  Workload pools can be distributed
   # across multiple failure domains, but default to this if not
