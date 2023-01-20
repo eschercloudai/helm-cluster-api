@@ -27,7 +27,7 @@ spec:
         command:
         - /manager
         image: '{{ .Values.image }}'
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
             path: /healthz

@@ -82,8 +82,6 @@ Control plane node labels.
 */}}
 {{- define "openstack.nodelabels.control-plane" -}}
 {{- $labels := list (printf "topology.%s/node-pool=control-plane" .Values.labelDomain) }}
-{{- $labels = append $labels (printf "topology.kubernetes.io/region=%s" .Values.openstack.region) }}
-{{- $labels = append $labels (printf "topology.kubernetes.io/zone=%s" .Values.openstack.failureDomain) }}
 {{- join "," $labels }}
 {{- end }}
 
@@ -95,8 +93,6 @@ see the logic in workload.yaml for seeding names, regions etc.
 {{- define "openstack.nodelabels.workload" -}}
 {{- $context := . }}
 {{- $labels := list (printf "topology.%s/node-pool=%s" .values.labelDomain .name) }}
-{{- $labels = append $labels (printf "topology.kubernetes.io/region=%s" .values.openstack.region) }}
-{{- $labels = append $labels (printf "topology.kubernetes.io/zone=%s" (include "openstack.failureDomain.workload" .)) }}
 {{- with $autoscaling := .pool.autoscaling }}
   {{- with $scheduler := $autoscaling.scheduler }}
     {{- with $gpu := $scheduler.gpu }}

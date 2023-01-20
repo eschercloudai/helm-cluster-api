@@ -204,7 +204,6 @@
 		"labelDomain",
 		"openstack",
 		"controlPlane",
-		"workloadPools",
 		"network"
 	],
 	"properties": {
@@ -218,8 +217,6 @@
 				"cloudsYAML",
 				"externalNetworkID",
 				"ca",
-				"sshKeyName",
-				"region",
 				"failureDomain"
 			],
 			"properties": {
@@ -238,9 +235,6 @@
                                 "sshKeyName": {
                                         "type": "string"
                                 },
-				"region": {
-					"type": "string"
-				},
                                 "failureDomain": {
                                         "type": "string"
                                 }
@@ -299,7 +293,6 @@
 		},
                 "workloadPools": {
 			"type:": "object",
-			"minProperties": 1,
 			"additionalProperties": {
 				"$ref": "#/$defs/workloadMachineSet"
 			}

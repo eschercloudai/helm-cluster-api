@@ -56,7 +56,9 @@ spec:
         kind: Secret
       flavor: {{ $pool.machine.flavor }}
       image: {{ $pool.machine.image }}
+      {{- if .Values.openstack.sshKeyName }}
       sshKeyName: {{ $.Values.openstack.sshKeyName }}
+      {{- end }}
       {{- if $pool.machine.diskSize }}
       rootVolume:
         availabilityZone: {{ include "openstack.failureDomain.workload" $context }}

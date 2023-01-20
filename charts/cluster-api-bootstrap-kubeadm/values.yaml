@@ -1,4 +1,4 @@
 exp_kubeadm_bootstrap_format_ignition: false
 exp_machine_pool: false
-image: registry.k8s.io/cluster-api/kubeadm-bootstrap-controller:v1.2.6
+image: registry.k8s.io/cluster-api/kubeadm-bootstrap-controller:v1.3.2
 kubeadm_bootstrap_token_ttl: 15m

@@ -63,7 +63,13 @@ def main():
 
         # Patch some common overrides.
         if kind == 'Deployment':
+            # The default image is something develper centric, and random, override.
             o['spec']['template']['spec']['containers'][0]['image'] = '{{ .Values.image }}'
+            # The default pull policy doesn't work in times of network trouble and slows
+            # things down, so allow caching.  If they are force pushing, then shame on
+            # CAPI for breaking semantic versioning.
+            o['spec']['template']['spec']['containers'][0]['imagePullPolicy'] = 'IfNotPresent'
+            # TODO: add in scheduling requests/limits for proper scheduling.
 
         # Cluster API for some reason embed environment variables in their manifests
         # because why not, it's not like everyone else uses go templating!  Replace

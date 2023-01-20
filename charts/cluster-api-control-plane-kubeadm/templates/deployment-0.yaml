@@ -39,7 +39,7 @@ spec:
             fieldRef:
               fieldPath: metadata.uid
         image: '{{ .Values.image }}'
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
             path: /healthz
