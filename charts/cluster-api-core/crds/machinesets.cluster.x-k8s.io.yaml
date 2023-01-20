@@ -3,7 +3,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: capi-system/capi-serving-cert
-    controller-gen.kubebuilder.io/version: v0.9.1
+    controller-gen.kubebuilder.io/version: v0.10.0
   labels:
     cluster.x-k8s.io/provider: cluster-api
   name: machinesets.cluster.x-k8s.io
@@ -142,7 +142,7 @@ spec:
               template:
                 description: Template is the object that describes the machine that
                   will be created if insufficient replicas are detected. Object references
-                  to custom resources resources are treated as templates.
+                  to custom resources are treated as templates.
                 properties:
                   metadata:
                     description: 'Standard object''s metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata'
@@ -589,7 +589,7 @@ spec:
               template:
                 description: Template is the object that describes the machine that
                   will be created if insufficient replicas are detected. Object references
-                  to custom resources resources are treated as templates.
+                  to custom resources are treated as templates.
                 properties:
                   metadata:
                     description: 'Standard object''s metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata'
@@ -993,7 +993,7 @@ spec:
               template:
                 description: Template is the object that describes the machine that
                   will be created if insufficient replicas are detected. Object references
-                  to custom resources resources are treated as templates.
+                  to custom resources are treated as templates.
                 properties:
                   metadata:
                     description: 'Standard object''s metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata'
@@ -1135,6 +1135,12 @@ spec:
                           value is 0, meaning that the node can be drained without
                           any time limitations. NOTE: NodeDrainTimeout is different
                           from `kubectl drain --timeout`'
+                        type: string
+                      nodeVolumeDetachTimeout:
+                        description: NodeVolumeDetachTimeout is the total amount of
+                          time that the controller will spend on waiting for all volumes
+                          to be detached. The default value is 0, meaning that the
+                          volumes can be detached without any time limitations.
                         type: string
                       providerID:
                         description: ProviderID is the identification ID of the machine

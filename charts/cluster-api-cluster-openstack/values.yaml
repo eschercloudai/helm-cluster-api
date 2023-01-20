@@ -20,11 +20,6 @@ openstack:
   # SSH key.
   sshKeyName: foo
 
-  # Region defines the topology region.
-  # This will be applied as the topology.kubernetes.io/region label
-  # to all nodes.
-  region: nl1
-
   # Global failure domain name.  Workload pools can be distributed
   # across multiple failure domains, but default to this if not
   # present.  Control plane nodes are deployed in this failure domain.
@@ -77,83 +72,79 @@ controlPlane:
     diskSize: 80
 
 # Workload pools topology.
-workloadPools:
-  # Pool name
-  default:
-    # Version of Kubernetes, should match that installed on the base images
-    # in order to improve provisioning and scaling time.
-    version: v1.25.2
-
-    # Number of workload machines.
-    replicas: 3
-
-    # Defines the physical properties of a machine.
-    # Modifications to these objects will trigger a affected workload pool upgrades.
-    machine:
-      # Openstack image name.
-      image: ubuntu-2204-kubernetes-1.25.0
-
-      # Workload machine type.
-      flavor: m1.large
-
-      # Ephemeral disk size in GB.  If specified this overrides the default
-      # size for the flavor.
-      diskSize: 160
-
-      # Failure domain to provision the pool in, defaults to openstack.failureDomain.
-      #
-      # failureDomain: nova
-
-    # Labels to apply to the pool nodes.  The pool name will be applied
-    # automatically with the $(labelDomain)/node-pool label.  The failureDomain
-    # will be automatically added as the well known "topology.kubernetes.io/zone"
-    # label along with the "topology.kubernetes.io/region" label.  This is only
-    # intended for use on initial node bring up and will not trigger a rolling
-    # upgrade.
-    #
-    # labels:
-    #   group: foo
-
-    # Files to include on the machine.  These are limited to base64 encoded,
-    # root owned and readable at present.  Like node labels above, this is only
-    # intended for use on initial node bring up and will not trigger a rolling
-    # upgrade.
-    #
-    # files:
-    # - path: /etc/cat
-    #   content: bWVvdw==
-
-    # Enable or disable cluster autoscaling.
-    # This object is considered immutable.
-    # autoscaling:
-    #   # Set the scaling limits.
-    #   # Limits are required by cluster-autoscaler.
-    #   limits:
-    #     # Minimum number of replicas.
-    #     minReplicas: 0
-    #
-    #     # Maximum number of replicas.
-    #     maxReplicas: 10
-    #
-    #   # Set the scaler scheduling hints.
-    #   # These are only required when using scale-from-zero support
-    #   # as cluster-autoscaler is unable to determine these values without
-    #   # an active node.
-    #   # scheduler:
-    #     # Number of CPU cores.
-    #     cpu: 4
-    #
-    #     # Amount of memory.
-    #     memory: 32G
-    #
-    #     # Whether a GPU is present or not.
-    #     gpu:
-    #       # The GPU type.
-    #       type: nvidia.com/gpu
-    #
-    #       # The number of GPUs.
-    #       count: 1
-
+# workloadPools:
+#  # Pool name
+#  default:
+#    # Version of Kubernetes, should match that installed on the base images
+#    # in order to improve provisioning and scaling time.
+#    version: v1.25.2
+#
+#    # Number of workload machines.
+#    replicas: 3
+#
+#    # Defines the physical properties of a machine.
+#    # Modifications to these objects will trigger a affected workload pool upgrades.
+#    machine:
+#      # Openstack image name.
+#      image: ubuntu-2204-kubernetes-1.25.0
+#
+#      # Workload machine type.
+#      flavor: m1.large
+#
+#      # Ephemeral disk size in GB.  If specified this overrides the default
+#      # size for the flavor.
+#      diskSize: 160
+#
+#      # Failure domain to provision the pool in, defaults to openstack.failureDomain.
+#      failureDomain: nova
+#
+#    # Labels to apply to the pool nodes.  The pool name will be applied
+#    # automatically with the $(labelDomain)/node-pool label.  The failureDomain
+#    # will be automatically added as the well known "topology.kubernetes.io/zone"
+#    # label along with the "topology.kubernetes.io/region" label.  This is only
+#    # intended for use on initial node bring up and will not trigger a rolling
+#    # upgrade.
+#    labels:
+#      group: foo
+#
+#    # Files to include on the machine.  These are limited to base64 encoded,
+#    # root owned and readable at present.  Like node labels above, this is only
+#    # intended for use on initial node bring up and will not trigger a rolling
+#    # upgrade.
+#    files:
+#    - path: /etc/cat
+#      content: bWVvdw==
+#
+#    # Enable or disable cluster autoscaling.
+#    # This object is considered immutable.
+#    autoscaling:
+#      # Set the scaling limits.
+#      # Limits are required by cluster-autoscaler.
+#      limits:
+#        # Minimum number of replicas.
+#        minReplicas: 0
+#
+#        # Maximum number of replicas.
+#        maxReplicas: 10
+#
+#      # Set the scaler scheduling hints.
+#      # These are only required when using scale-from-zero support
+#      # as cluster-autoscaler is unable to determine these values without
+#      # an active node.
+#      # scheduler:
+#        # Number of CPU cores.
+#        cpu: 4
+#
+#        # Amount of memory.
+#        memory: 32G
+#
+#        # Whether a GPU is present or not.
+#        gpu:
+#          # The GPU type.
+#          type: nvidia.com/gpu
+#
+#          # The number of GPUs.
+#          count: 1
 
 # Kubernetes/OpenStack networking options.
 # Network options are immutable, changes will not result in

@@ -67,7 +67,9 @@ spec:
     spec:
       flavor: {{ .Values.controlPlane.machine.flavor }}
       image: {{ .Values.controlPlane.machine.image }}
+      {{- if .Values.openstack.sshKeyName }}
       sshKeyName: {{ .Values.openstack.sshKeyName }}
+      {{- end }}
       cloudName: {{ .Values.openstack.cloud }}
       identityRef:
         name: {{ .Release.Name }}-cloud-config
