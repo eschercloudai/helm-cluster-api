@@ -79,3 +79,4 @@ spec:
         availabilityZone: {{ .Values.openstack.failureDomain }}
         diskSize: {{ .Values.controlPlane.machine.diskSize }}
       {{- end }}
+      allowAllInClusterTraffic: true
