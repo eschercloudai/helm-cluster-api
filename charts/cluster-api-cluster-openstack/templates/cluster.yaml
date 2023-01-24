@@ -49,6 +49,7 @@ spec:
       {{- end }}
     {{- end }}
   managedSecurityGroups: true
+  allowAllInClusterTraffic: true
   nodeCidr: {{ .Values.network.nodeCIDR }}
   dnsNameservers:
     {{- range .Values.network.dnsNameservers}}

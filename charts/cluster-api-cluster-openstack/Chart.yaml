@@ -2,5 +2,5 @@ apiVersion: v2
 name: cluster-api-cluster-openstack
 description: A Helm chart to deploy a Kubernetes Cluster
 type: application
-version: v0.3.5
+version: v0.3.6
 icon: https://raw.githubusercontent.com/eschercloudai/helm-cluster-api/main/icons/default.png
