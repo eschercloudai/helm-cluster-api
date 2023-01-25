@@ -23,7 +23,9 @@ metadata:
     {{- include "openstackcluster.autoscalingAnnotations" $pool | nindent 4 }}
 spec:
   clusterName: "{{ $.Release.Name }}"
+  {{- if $pool.autoscaling }}{{ else }}
   replicas: {{ $pool.replicas }}
+  {{- end }}
   selector:
     matchLabels:
   template:
