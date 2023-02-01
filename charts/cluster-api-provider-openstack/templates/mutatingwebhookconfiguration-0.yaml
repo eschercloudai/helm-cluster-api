@@ -13,7 +13,7 @@ webhooks:
     service:
       name: capo-webhook-service
       namespace: capo-system
-      path: /mutate-infrastructure-cluster-x-k8s-io-v1alpha5-openstackcluster
+      path: /mutate-infrastructure-cluster-x-k8s-io-v1alpha6-openstackcluster
   failurePolicy: Fail
   matchPolicy: Equivalent
   name: default.openstackcluster.infrastructure.cluster.x-k8s.io
@@ -21,7 +21,7 @@ webhooks:
   - apiGroups:
     - infrastructure.cluster.x-k8s.io
     apiVersions:
-    - v1alpha5
+    - v1alpha6
     operations:
     - CREATE
     - UPDATE
@@ -34,7 +34,7 @@ webhooks:
     service:
       name: capo-webhook-service
       namespace: capo-system
-      path: /mutate-infrastructure-cluster-x-k8s-io-v1alpha5-openstackclustertemplate
+      path: /mutate-infrastructure-cluster-x-k8s-io-v1alpha6-openstackclustertemplate
   failurePolicy: Fail
   matchPolicy: Equivalent
   name: default.openstackclustertemplate.infrastructure.cluster.x-k8s.io
@@ -42,7 +42,7 @@ webhooks:
   - apiGroups:
     - infrastructure.cluster.x-k8s.io
     apiVersions:
-    - v1alpha5
+    - v1alpha6
     operations:
     - CREATE
     - UPDATE
@@ -55,7 +55,7 @@ webhooks:
     service:
       name: capo-webhook-service
       namespace: capo-system
-      path: /mutate-infrastructure-cluster-x-k8s-io-v1alpha5-openstackmachine
+      path: /mutate-infrastructure-cluster-x-k8s-io-v1alpha6-openstackmachine
   failurePolicy: Fail
   matchPolicy: Equivalent
   name: default.openstackmachine.infrastructure.cluster.x-k8s.io
@@ -63,7 +63,7 @@ webhooks:
   - apiGroups:
     - infrastructure.cluster.x-k8s.io
     apiVersions:
-    - v1alpha5
+    - v1alpha6
     operations:
     - CREATE
     - UPDATE
