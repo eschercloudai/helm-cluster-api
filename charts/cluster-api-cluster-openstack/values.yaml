@@ -21,10 +21,14 @@ openstack:
   #
   # sshKeyName: foo
 
-  # Global failure domain name.  Workload pools can be distributed
+  # Compute failure domain name.  Workload pools can be distributed
   # across multiple failure domains, but default to this if not
   # present.  Control plane nodes are deployed in this failure domain.
-  failureDomain: nova
+  computeFailureDomain: nova
+
+  # If volumes are defined for machine sets, this is the global default.
+  # It can be overidden on a per-workload pool/control plane basis.
+  # volumeFailureDomain: nova
 
 # Cluster wide configuration.
 #
@@ -70,7 +74,7 @@ controlPlane:
 
     # Ephemeral disk size in GB.  If specified this overrides the default
     # size for the flavor.
-    diskSize: 80
+    # diskSize: 80
 
 # Workload pools topology.
 # workloadPools:

@@ -48,6 +48,8 @@ spec:
         {{- end }}
       {{- end }}
     {{- end }}
+  controlPlaneAvailabilityZones:
+  - {{ .Values.openstack.computeFailureDomain }}
   managedSecurityGroups: true
   allowAllInClusterTraffic: true
   nodeCidr: {{ .Values.network.nodeCIDR }}

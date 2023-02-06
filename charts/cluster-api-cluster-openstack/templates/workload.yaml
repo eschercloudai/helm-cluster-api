@@ -32,7 +32,7 @@ spec:
     spec:
       clusterName: "{{ $.Release.Name }}"
       version: "{{ $pool.version }}"
-      failureDomain: {{ include "openstack.failureDomain.workload" $context }}
+      failureDomain: {{ include "openstack.failureDomain.compute.workload" $context }}
       bootstrap:
         configRef:
           name: {{ $pool_name_discriminated }}
@@ -61,10 +61,10 @@ spec:
       {{- if $.Values.openstack.sshKeyName }}
       sshKeyName: {{ $.Values.openstack.sshKeyName }}
       {{- end }}
-      {{- if $pool.machine.diskSize }}
+      {{- with $disk := $pool.machine.disk }}
       rootVolume:
-        availabilityZone: {{ include "openstack.failureDomain.workload" $context }}
-        diskSize: {{ $pool.machine.diskSize }}
+        availabilityZone: {{ include "openstack.failureDomain.volume.workload" $context }}
+        diskSize: {{ $disk.size }}
       {{- end }}
 ---
 apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
