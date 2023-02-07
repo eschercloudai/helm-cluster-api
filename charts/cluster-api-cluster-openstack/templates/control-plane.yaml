@@ -74,8 +74,8 @@ spec:
       identityRef:
         name: {{ .Release.Name }}-cloud-config
         kind: Secret
-      {{- if .Values.controlPlane.machine.diskSize }}
+      {{- if .Values.controlPlane.machine.disk }}
       rootVolume:
-        availabilityZone: {{ .Values.openstack.failureDomain }}
-        diskSize: {{ .Values.controlPlane.machine.diskSize }}
+        availabilityZone: {{ .Values.openstack.volumeFailureDomain }}
+        diskSize: {{ .Values.controlPlane.machine.disk.size }}
       {{- end }}

@@ -84,6 +84,20 @@
 				"$ref": "#/$defs/taint"
 			}
 		},
+		"disk": {
+			"type": "object",
+			"required": [
+				"size"
+			],
+			"properties": {
+				"size": {
+					"$ref": "#/$defs/nonNegativeNumber"
+				},
+				"failureDomain": {
+                                        "type": "string"
+                                }
+			}
+		},
 		"machine": {
 			"type": "object",
 			"required": [
@@ -97,8 +111,8 @@
 				"flavor": {
                                         "type": "string"
                                 },
-                                "diskSize": {
-                                        "$ref": "#/$defs/nonNegativeNumber"
+                                "disk": {
+                                        "$ref": "#/$defs/disk"
                                 },
 				"failureDomain": {
 					"type": "string"
@@ -217,7 +231,7 @@
 				"cloudsYAML",
 				"externalNetworkID",
 				"ca",
-				"failureDomain"
+				"computeFailureDomain"
 			],
 			"properties": {
 				"cloud": {
@@ -235,9 +249,12 @@
                                 "sshKeyName": {
                                         "type": "string"
                                 },
-                                "failureDomain": {
+                                "computeFailureDomain": {
                                         "type": "string"
-                                }
+                                },
+				"volumeFailureDomain": {
+					"type": "string"
+				}
 			}
 		},
 		"cluster": {

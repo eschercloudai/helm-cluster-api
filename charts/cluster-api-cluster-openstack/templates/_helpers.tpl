@@ -73,8 +73,15 @@ capacity.cluster-autoscaler.kubernetes.io/gpu-count: '{{ $gpu.count }}'
 {{/*
 Workload failure domain.
 */}}
-{{- define "openstack.failureDomain.workload" -}}
-{{ .pool.machine.failureDomain | default .values.openstack.failureDomain }}
+{{- define "openstack.failureDomain.compute.workload" -}}
+{{ .pool.machine.failureDomain | default .values.openstack.computeFailureDomain }}
+{{- end }}
+
+{{/*
+Workload volume failure domain.
+*/}}
+{{- define "openstack.failureDomain.volume.workload" -}}
+{{ .pool.machine.disk.failureDomain | default .values.openstack.volumeFailureDomain }}
 {{- end }}
 
 {{/*
