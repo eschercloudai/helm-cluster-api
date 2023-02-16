@@ -125,18 +125,29 @@ take a whole object and marshal it.
 {{- with $api := .Values.api }}
 {{- $value = set $value "certificateSANs" $api.certificateSANs }}
 {{- end }}
-{{ $value | mustToJson | sha256sum }}
+{{- $value | mustToJson | sha256sum }}
 {{- end }}
 
 {{- define "openstack.discriminator.control-plane" -}}
-{{ (dict "api" (include "openstack.discriminator.control-plane.api" .) "pool" .Values.controlPlane.machine) | mustToJson | sha256sum | trunc 8 }}
+{{- (dict "api" (include "openstack.discriminator.control-plane.api" .) "pool" .Values.controlPlane.machine) | mustToJson | sha256sum | trunc 8 }}
+{{- end }}
+
+{{/*
+Cluster name.
+*/}}
+{{- define "openstack.discriminator.cluster" -}}
+{{- $value := dict }}
+{{- with $api := .Values.api }}
+{{- $value = set $value "allowList" $api.allowList }}
+{{- end }}
+{{- $value | mustToJson | sha256sum | trunc 8 }}
 {{- end }}
 
 {{/*
 Workload pool names.
 */}}
 {{- define "openstack.discriminator.workload" -}}
-{{ (dict "pool" .pool.machine) | mustToJson | sha256sum | trunc 8 }}
+{{- (dict "pool" .pool.machine) | mustToJson | sha256sum | trunc 8 }}
 {{- end }}
 
 {{/*
