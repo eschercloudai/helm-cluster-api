@@ -1,3 +1,4 @@
+{{ $cluster_name_discriminated := printf "%v-%v" $.Release.Name (include "openstack.discriminator.cluster" .) }}
 ---
 apiVersion: cluster.x-k8s.io/v1beta1
 kind: Cluster
@@ -21,7 +22,7 @@ spec:
   infrastructureRef:
     apiVersion: infrastructure.cluster.x-k8s.io/v1alpha6
     kind: OpenStackCluster
-    name: {{ .Release.Name }}
+    name: {{ $cluster_name_discriminated }}
   controlPlaneRef:
     kind: KubeadmControlPlane
     apiVersion: controlplane.cluster.x-k8s.io/v1beta1
@@ -30,7 +31,7 @@ spec:
 apiVersion: infrastructure.cluster.x-k8s.io/v1alpha6
 kind: OpenStackCluster
 metadata:
-  name: {{ .Release.Name }}
+  name: {{ $cluster_name_discriminated }}
   labels:
     {{- include "openstackcluster.labels" . | nindent 4 }}
 spec:
