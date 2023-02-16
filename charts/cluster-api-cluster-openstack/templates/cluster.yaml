@@ -1,4 +1,14 @@
-{{ $cluster_name_discriminated := printf "%v-%v" $.Release.Name (include "openstack.discriminator.cluster" .) }}
+# The openstackcluster resource is immutable, with the exception of the
+# firewall rules list.  If anything else changes, then we need to trigger
+# an upgrade via a resource rename.  Like other things e.g. osmts, we can
+# base the name on inputs.  However in this case, something like adding
+# availability zone support (which should in general be immutable), would
+# also need to trigger a rename.  So to do that without making it based on
+# the input, we need another method, i.e. a revision.  So if you decide to
+# add support for a new immutable thing, you will also need to increment
+# this number.  Got it??
+{{- $cluster_revision := 1 }}
+{{- $cluster_name_discriminated := printf "%v-%v" $.Release.Name (include "openstack.discriminator.cluster" $cluster_revision) }}
 ---
 apiVersion: cluster.x-k8s.io/v1beta1
 kind: Cluster
@@ -28,6 +38,8 @@ spec:
     apiVersion: controlplane.cluster.x-k8s.io/v1beta1
     name: {{ .Release.Name }}-control-plane
 ---
+# Please read the comment at the top of this file before making any changes
+# to this template.
 apiVersion: infrastructure.cluster.x-k8s.io/v1alpha6
 kind: OpenStackCluster
 metadata:
