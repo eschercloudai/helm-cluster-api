@@ -188,6 +188,16 @@ entries:
     version: v0.1.0
   cluster-api-cluster-openstack:
   - apiVersion: v2
+    created: "2023-02-16T12:38:19.978623319Z"
+    description: A Helm chart to deploy a Kubernetes Cluster
+    digest: 724d2e092128f896da6f2989e0b456addcfd869912f08335d6dd19f3ebf8ca6a
+    icon: https://raw.githubusercontent.com/eschercloudai/helm-cluster-api/main/icons/default.png
+    name: cluster-api-cluster-openstack
+    type: application
+    urls:
+    - https://github.com/eschercloudai/helm-cluster-api/releases/download/cluster-api-cluster-openstack-v0.3.10/cluster-api-cluster-openstack-v0.3.10.tgz
+    version: v0.3.10
+  - apiVersion: v2
     created: "2023-02-07T09:50:44.589735265Z"
     description: A Helm chart to deploy a Kubernetes Cluster
     digest: 1fa6c36db6c829f37b4a27369422c8fbdc8d2150aae0cc70a02965ea9ed14bd9
@@ -513,4 +523,4 @@ entries:
     urls:
     - https://github.com/eschercloudai/helm-cluster-api/releases/download/cluster-api-provider-openstack-v0.1.0/cluster-api-provider-openstack-v0.1.0.tgz
     version: v0.1.0
-generated: "2023-02-07T09:50:44.589854465Z"
+generated: "2023-02-16T12:38:19.978877819Z"
