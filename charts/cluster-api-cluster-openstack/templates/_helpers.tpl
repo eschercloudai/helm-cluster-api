@@ -133,13 +133,6 @@ take a whole object and marshal it.
 {{- end }}
 
 {{/*
-Cluster name.
-*/}}
-{{- define "openstack.discriminator.cluster" -}}
-{{- (dict "revision" .) | mustToJson | sha256sum | trunc 8 }}
-{{- end }}
-
-{{/*
 Workload pool names.
 */}}
 {{- define "openstack.discriminator.workload" -}}
