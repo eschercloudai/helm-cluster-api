@@ -136,11 +136,7 @@ take a whole object and marshal it.
 Cluster name.
 */}}
 {{- define "openstack.discriminator.cluster" -}}
-{{- $value := dict }}
-{{- with $api := .Values.api }}
-{{- $value = set $value "allowList" $api.allowList }}
-{{- end }}
-{{- $value | mustToJson | sha256sum | trunc 8 }}
+{{- (dict "revision" .) | mustToJson | sha256sum | trunc 8 }}
 {{- end }}
 
 {{/*
