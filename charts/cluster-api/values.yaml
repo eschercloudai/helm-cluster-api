@@ -5,3 +5,24 @@ kubeadm:
 # Enable/disable OpenStack provider.
 openstack:
   enabled: true
+
+cluster-api-core:
+  cluster_topology: false
+  exp_cluster_resource_set: false
+  exp_machine_pool: false
+  exp_runtime_sdk: false
+  image: registry.k8s.io/cluster-api/cluster-api-controller:v1.3.2
+
+cluster-api-bootstrap-kubeadm:
+  exp_kubeadm_bootstrap_format_ignition: false
+  exp_machine_pool: false
+  image: registry.k8s.io/cluster-api/kubeadm-bootstrap-controller:v1.3.2
+  kubeadm_bootstrap_token_ttl: 15m
+
+cluster-api-control-plane-kubeadm:
+  cluster_topology: false
+  exp_kubeadm_bootstrap_format_ignition: false
+  image: registry.k8s.io/cluster-api/kubeadm-control-plane-controller:v1.3.2
+
+cluster-api-provider-openstack:
+  image: k8s.gcr.io/capi-openstack/capi-openstack-controller:v0.7.0
