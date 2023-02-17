@@ -1,5 +1,5 @@
 # Update this for every tagged release.
-CHART_VERSION = v0.1.4
+CHART_VERSION = v0.1.5
 
 # Defines the versions to use for cluster API components.
 CAPI_VERSION = v1.3.2
@@ -19,7 +19,11 @@ USER_CHARTS = cluster-api \
 # Generator script location.
 GENERATE = ./generate.py
 
-all: $(CHARTS)
+all: cluster-api
+
+.PHONY: cluster-api
+cluster-api: $(CHARTS)
+	./generate-capi.py $(CHARTS)
 
 .PHONY: cluster-api-core
 cluster-api-core:
