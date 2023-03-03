@@ -4,4 +4,4 @@ description: A Helm chart for deploying cluster API.
 icon: https://raw.githubusercontent.com/eschercloudai/helm-cluster-api/main/icons/default.png
 name: cluster-api-control-plane-kubeadm
 type: application
-version: v0.1.5
+version: v0.1.6
