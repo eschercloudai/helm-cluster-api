@@ -23,6 +23,7 @@ spec:
         - --leader-elect
         - --metrics-bind-addr=localhost:8080
         - --feature-gates=MachinePool={{ .Values.exp_machine_pool }},ClusterResourceSet={{ .Values.exp_cluster_resource_set }},ClusterTopology={{ .Values.cluster_topology }},RuntimeSDK={{ .Values.exp_runtime_sdk }}
+        - --logging-format=json
         command:
         - /manager
         env:

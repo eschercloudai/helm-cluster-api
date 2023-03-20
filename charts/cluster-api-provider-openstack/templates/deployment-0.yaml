@@ -23,6 +23,7 @@ spec:
         - --leader-elect
         - --v=2
         - --metrics-bind-addr=127.0.0.1:8080
+        - --logging-format=json
         command:
         - /manager
         image: '{{ .Values.image }}'

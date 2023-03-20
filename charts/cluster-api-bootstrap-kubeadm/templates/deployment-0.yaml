@@ -24,6 +24,7 @@ spec:
         - --metrics-bind-addr=localhost:8080
         - --feature-gates=MachinePool={{ .Values.exp_machine_pool }},KubeadmBootstrapFormatIgnition={{ .Values.exp_kubeadm_bootstrap_format_ignition }}
         - --bootstrap-token-ttl={{ .Values.kubeadm_bootstrap_token_ttl }}
+        - --logging-format=json
         command:
         - /manager
         image: '{{ .Values.image }}'
