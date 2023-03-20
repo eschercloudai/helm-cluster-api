@@ -5,6 +5,13 @@ metadata:
   name: {{ .Release.Name }}
   labels:
     {{- include "openstackcluster.labels" . | nindent 4 }}
+  annotations:
+    # If we just delete all the things, I believe there is a race where
+    # CAPO blows away the cluster infrastructure before it has a chance
+    # to delete the machines, and we get into a deadlock state.  By
+    # provisioning the cluster last, and deleting it first, we should be
+    # able to let CAPI take care of its own ordering.
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   clusterNetwork:
     pods:
