@@ -69,6 +69,8 @@ def main():
             # things down, so allow caching.  If they are force pushing, then shame on
             # CAPI for breaking semantic versioning.
             o['spec']['template']['spec']['containers'][0]['imagePullPolicy'] = 'IfNotPresent'
+            # Make the logs structured, for obvious reasons.
+            o['spec']['template']['spec']['containers'][0]['args'].append('--logging-format=json')
             # TODO: add in scheduling requests/limits for proper scheduling.
 
         # Cluster API for some reason embed environment variables in their manifests

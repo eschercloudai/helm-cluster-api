@@ -23,6 +23,7 @@ spec:
         - --leader-elect
         - --metrics-bind-addr=localhost:8080
         - --feature-gates=ClusterTopology={{ .Values.cluster_topology }},KubeadmBootstrapFormatIgnition={{ .Values.exp_kubeadm_bootstrap_format_ignition }}
+        - --logging-format=json
         command:
         - /manager
         env:
