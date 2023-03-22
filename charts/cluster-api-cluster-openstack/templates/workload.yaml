@@ -20,6 +20,10 @@ metadata:
   labels:
     {{- include "openstackcluster.labels" $ | nindent 4 }}
   annotations:
+    # See comment in cluster.yaml.  ArgoCD has some smarts that monitor
+    # the status of Cluster/Machine/MachineDeployment, so we need to
+    # provision this after any referenced templates.
+    argocd.argoproj.io/sync-wave: "2"
     {{- include "openstackcluster.autoscalingAnnotations" $pool | nindent 4 }}
 spec:
   clusterName: "{{ $.Release.Name }}"
