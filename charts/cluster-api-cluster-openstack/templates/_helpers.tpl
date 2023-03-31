@@ -143,8 +143,6 @@ Workload pool names.
 Taints
 */}}
 {{- define "openstack.taints.control-plane" -}}
-- key: node-role.kubernetes.io/master
-  effect: NoSchedule
 - key: node-role.kubernetes.io/control-plane
   effect: NoSchedule
 {{- with $cluster := .Values.cluster }}
