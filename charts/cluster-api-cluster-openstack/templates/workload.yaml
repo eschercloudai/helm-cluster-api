@@ -20,10 +20,8 @@ metadata:
   labels:
     {{- include "openstackcluster.labels" $ | nindent 4 }}
   annotations:
-    # See comment in cluster.yaml.  ArgoCD has some smarts that monitor
-    # the status of Cluster/Machine/MachineDeployment, so we need to
-    # provision this after any referenced templates.
-    argocd.argoproj.io/sync-wave: "2"
+    # Let CAPO do this in its chosen order.
+    argocd.argoproj.io/sync-options: Delete=false
     {{- include "openstackcluster.autoscalingAnnotations" $pool | nindent 4 }}
 spec:
   clusterName: "{{ $.Release.Name }}"
@@ -53,6 +51,9 @@ metadata:
   name: {{ $pool_name_discriminated }}
   labels:
     {{- include "openstackcluster.labels" $ | nindent 4 }}
+  annotations:
+    # Let CAPO do this in its chosen order.
+    argocd.argoproj.io/sync-options: Delete=false
 spec:
   template:
     spec:
@@ -77,6 +78,9 @@ metadata:
   name: {{ $pool_name_discriminated }}
   labels:
     {{- include "openstackcluster.labels" $ | nindent 4 }}
+  annotations:
+    # Let CAPO do this in its chosen order.
+    argocd.argoproj.io/sync-options: Delete=false
 spec:
   template:
     spec:

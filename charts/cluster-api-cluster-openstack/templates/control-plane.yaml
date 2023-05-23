@@ -5,6 +5,9 @@ metadata:
   name: "{{ .Release.Name }}-control-plane"
   labels:
     {{- include "openstackcluster.labels" . | nindent 4 }}
+  annotations:
+    # Let CAPO do this in its chosen order.
+    argocd.argoproj.io/sync-options: Delete=false
 spec:
   version: "{{ .Values.controlPlane.version }}"
   replicas: {{ .Values.controlPlane.replicas }}
@@ -62,6 +65,9 @@ metadata:
   name: {{ .Release.Name }}-control-plane-{{ include "openstack.discriminator.control-plane" . }}
   labels:
     {{- include "openstackcluster.labels" . | nindent 4 }}
+  annotations:
+    # Let CAPO do this in its chosen order.
+    argocd.argoproj.io/sync-options: Delete=false
 spec:
   template:
     spec:
