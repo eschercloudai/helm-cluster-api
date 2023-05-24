@@ -123,20 +123,45 @@ take a whole object and marshal it.
 {{- define "openstack.discriminator.control-plane.api" -}}
 {{- $value := dict }}
 {{- with $api := .Values.api }}
-{{- $value = set $value "certificateSANs" $api.certificateSANs }}
+  {{- $value = set $value "certificateSANs" $api.certificateSANs }}
 {{- end }}
 {{- $value | mustToJson | sha256sum }}
 {{- end }}
 
+{{/*
+The initial $value is legacy and should not be modified unless a change is absolutely
+necessary as this triggers a rolling upgrade.  Instead perfer to selectively add and
+remove elements to legacy clusters aren't affected.
+*/}}
 {{- define "openstack.discriminator.control-plane" -}}
-{{- (dict "api" (include "openstack.discriminator.control-plane.api" .) "pool" .Values.controlPlane.machine) | mustToJson | sha256sum | trunc 8 }}
+{{- $value := dict "api" (include "openstack.discriminator.control-plane.api" .) "pool" .Values.controlPlane.machine }}
+{{- $clusterValue := dict }}
+{{- with $cluster := .Values.cluster }}
+  {{- with $serverMeta := $cluster.serverMetadata }}
+    {{- $clusterValue = set $clusterValue "serverMetadata" $serverMeta }}
+  {{- end }}
+{{- end }}
+{{- if not (empty $clusterValue) }}
+{{- $value = set $value "cluster" $clusterValue }}
+{{- end }}
+{{- $value | mustToJson | sha256sum | trunc 8 }}
 {{- end }}
 
 {{/*
 Workload pool names.
 */}}
 {{- define "openstack.discriminator.workload" -}}
-{{- (dict "pool" .pool.machine) | mustToJson | sha256sum | trunc 8 }}
+{{- $value := dict "pool" .pool.machine }}
+{{- $clusterValue := dict }}
+{{- with $cluster := .values.cluster }}
+  {{- with $serverMeta := $cluster.serverMetadata }}
+    {{- $clusterValue = set $clusterValue "serverMetadata" $serverMeta }}
+  {{- end }}
+{{- end }}
+{{- if not (empty $clusterValue) }}
+{{- $value = set $value "cluster" $clusterValue }}
+{{- end }}
+{{- $value | mustToJson | sha256sum | trunc 8 }}
 {{- end }}
 
 {{/*
