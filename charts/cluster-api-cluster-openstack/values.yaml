@@ -39,6 +39,10 @@ openstack:
   # - key: node.cilium.io/agent-not-ready
   #   effect: NoSchedule
   #   value: 'true'
+  #
+  # Applies the following key/value pairs to all server instances.
+  # serverMetadata:
+  #   foo: bar
 
 # Kubernetes API specific configuration.
 #

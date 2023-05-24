@@ -262,6 +262,9 @@
 			"properties": {
 				"taints": {
 					"$ref": "#/$defs/taintList"
+				},
+				"serverMetadata": {
+					"$ref": "#/$defs/stringMap"
 				}
 			}
 		},
