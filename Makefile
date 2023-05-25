@@ -14,7 +14,8 @@ CHARTS = cluster-api-core \
 # These charts are hand crafted, but still valid for things like
 # validation.
 USER_CHARTS = cluster-api \
-	      cluster-api-cluster-openstack
+	      cluster-api-cluster-openstack \
+	      cluster-api-cluster-autoscaler-openstack
 
 # Generator script location.
 GENERATE = ./generate.py
