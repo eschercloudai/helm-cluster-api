@@ -1,0 +1,2 @@
+# You'll want to force rbac.serviceAccount.name in the cluster-autoscaler chart to this value.
+serviceAccountName: cluster-autoscaler
