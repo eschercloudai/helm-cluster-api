@@ -116,7 +116,10 @@
                                 },
 				"failureDomain": {
 					"type": "string"
-				}
+				},
+				"serverGroupID": {
+                                        "type": "string"
+                                }
 			}
 		},
 		"workloadMachineSet": {
@@ -308,9 +311,6 @@
 				},
 				"machine": {
 					"$ref": "#/$defs/machine"
-				},
-				"serverGroupID": {
-					"type": "string"
 				}
 			}
 		},
