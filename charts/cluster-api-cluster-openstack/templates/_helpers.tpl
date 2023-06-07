@@ -141,9 +141,6 @@ remove elements to legacy clusters aren't affected.
     {{- $clusterValue = set $clusterValue "serverMetadata" $serverMeta }}
   {{- end }}
 {{- end }}
-{{- with $serverGroupID := .Values.controlPlane.serverGroupID }}
-  {{- $clusterValue = set $clusterValue "serverGroupID" $serverGroupID }}
-{{- end }}
 {{- if not (empty $clusterValue) }}
 {{- $value = set $value "cluster" $clusterValue }}
 {{- end }}
