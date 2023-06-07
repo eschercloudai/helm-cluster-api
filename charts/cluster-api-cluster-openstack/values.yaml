@@ -80,6 +80,9 @@ controlPlane:
     # size for the flavor.
     # diskSize: 80
 
+  # Set the server group of the control plane (e.g. anti-affinity rules).
+  # serverGroupID: foo
+
 # Workload pools topology.
 # workloadPools:
 #  # Pool name
