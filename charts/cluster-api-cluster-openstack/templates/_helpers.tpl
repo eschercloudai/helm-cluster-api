@@ -1,25 +1,72 @@
 {{/*
-Expand the name of the chart.
+Rather than use the release name directly, we hash to to ensure we don't blow the
+63 character name limit that Kubernetes imposes.
 */}}
-{{- define "openstackcluster.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- define "release.hash" }}
+{{- .Release.Name | sha256sum | trunc 8 }}
 {{- end }}
 
 {{/*
-Create a default fully qualified app name.
-We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
-If release name contains chart name it will be used as a full name.
+When running multiple CAPO instances against a single cloud, names may alias and
+you can end up using the same network for multiple clusters, when this happens its
+pretty easy for one to end up deleting the other and vice versa.  To prevent this
+we can inject a unique instance ID into the name to preven aliasing.
 */}}
-{{- define "openstackcluster.fullname" -}}
-{{- if .Values.fullnameOverride }}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
-{{- else }}
-{{- $name := default .Chart.Name .Values.nameOverride }}
-{{- if contains $name .Release.Name }}
-{{- .Release.Name | trunc 63 | trimSuffix "-" }}
-{{- else }}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
+{{- define "controller.hash" }}
+{{- .Values.controllerInstance | sha256sum | trunc 8 }}
 {{- end }}
+
+{{- define "cluster.name" }}
+{{- if .Values.legacyResourceNames }}
+  {{- .Release.Name }}
+{{- else }}
+  {{- printf "cluster-%s" ( include "release.hash" . ) }}
+{{- end }}
+{{- end }}
+
+{{/*
+Ensure with clusters that the resource names are unique as CAPO, at least, uses
+names rather than something unique about the resource to find the network.  It's
+a classic split-brain problem, but a legitimate one when you consider you can have
+dev/staging/production CAPI instances.
+*/}}
+{{- define "openstackcluster.name" }}
+{{- if .Values.legacyResourceNames }}
+  {{- .Release.Name }}
+{{- else }}
+  {{- if .Values.controllerInstance }}
+    {{- printf "cluster-%s-instance-%s" ( include "release.hash" . ) ( include "controller.hash" . ) }}
+  {{- else }}
+    {{- printf "cluster-%s" ( include "release.hash" . ) }}
+  {{- end }}
+{{- end }}
+{{- end }}
+
+{{- define "cloudconfig.name" }}
+{{- if .Values.legacyResourceNames }}
+  {{- printf "%s-cloud-config" .Release.Name }}
+{{- else }}
+  {{- printf "cluster-%s-cloud-config" ( include "release.hash" . ) }}
+{{- end }}
+{{- end }}
+
+{{- define "kubeadmcontrolplane.name" }}
+{{- if .Values.legacyResourceNames }}
+  {{- printf "%s-control-plane" .Release.Name }}
+{{- else }}
+  {{- printf "cluster-%s" ( include "release.hash" . ) }}
+{{- end }}
+{{- end }}
+
+{{/*
+The machine templates are a bit special in that their names will directly
+influence the hostnames of the nodes.
+*/}}
+{{- define "controlplane.openstackmachinetemplate.name" }}
+{{- if .Values.legacyResourceNames }}
+  {{- printf "%s-control-plane-%s" .Release.Name ( include "openstack.discriminator.control-plane" . ) }}
+{{- else }}
+  {{- printf "cluster-%s-control-plane-%s" ( include "release.hash" . ) ( include "openstack.discriminator.control-plane" . ) }}
 {{- end }}
 {{- end }}
 
@@ -46,7 +93,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Selector labels
 */}}
 {{- define "openstackcluster.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "openstackcluster.name" . }}
+app.kubernetes.io/name: {{ include "cluster.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 

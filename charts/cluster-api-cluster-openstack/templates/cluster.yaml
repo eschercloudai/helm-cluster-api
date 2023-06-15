@@ -2,7 +2,7 @@
 apiVersion: cluster.x-k8s.io/v1beta1
 kind: Cluster
 metadata:
-  name: {{ .Release.Name }}
+  name: {{ include "cluster.name" . }}
   labels:
     {{- include "openstackcluster.labels" . | nindent 4 }}
 spec:
@@ -21,16 +21,16 @@ spec:
   infrastructureRef:
     apiVersion: infrastructure.cluster.x-k8s.io/v1alpha6
     kind: OpenStackCluster
-    name: {{ .Release.Name }}
+    name: {{ include "openstackcluster.name" . }}
   controlPlaneRef:
     kind: KubeadmControlPlane
     apiVersion: controlplane.cluster.x-k8s.io/v1beta1
-    name: {{ .Release.Name }}-control-plane
+    name: {{ include "kubeadmcontrolplane.name" . }}
 ---
 apiVersion: infrastructure.cluster.x-k8s.io/v1alpha6
 kind: OpenStackCluster
 metadata:
-  name: {{ .Release.Name }}
+  name: {{ include "openstackcluster.name" . }}
   labels:
     {{- include "openstackcluster.labels" . | nindent 4 }}
   annotations:
@@ -39,7 +39,7 @@ metadata:
 spec:
   cloudName: {{ .Values.openstack.cloud }}
   identityRef:
-    name: {{ .Release.Name }}-cloud-config
+    name: {{ include "cloudconfig.name" . }}
     kind: Secret
   apiServerLoadBalancer:
     enabled: true
@@ -63,7 +63,7 @@ spec:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ .Release.Name }}-cloud-config
+  name: {{ include "cloudconfig.name" . }}
   labels:
     {{- include "openstackcluster.labels" . | nindent 4 }}
     clusterctl.cluster.x-k8s.io/move: "true"

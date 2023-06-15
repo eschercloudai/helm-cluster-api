@@ -1,17 +1,22 @@
-{{ $values := .Values }}
-{{ range $name, $pool := .Values.workloadPools }}
+{{- $values := .Values }}
+{{- range $name, $pool := .Values.workloadPools }}
 
 {{/*
 Helm is a bit crap in that $. doesn't work in an include with a non-global scope.
 To combat this, we build a custom context before handing off to thte template.
 */}}
-{{ $context := dict "name" $name "pool" $pool "values" $values }}
+{{- $context := dict "name" $name "pool" $pool "values" $values }}
 
 {{/*
 The resource names are common all over the place, so define in a canonical location.
 */}}
-{{ $pool_name := printf "%v-pool-%v" $.Release.Name $name }}
-{{ $pool_name_discriminated := printf "%v-pool-%v-%v" $.Release.Name $name (include "openstack.discriminator.workload" $context) }}
+{{- $pool_name := printf "cluster-%s-pool-%s" ( include "release.hash" $ ) ( $name | sha256sum | trunc 8 ) }}
+{{- $pool_name_discriminated := printf "cluster-%s-pool-%s-%s" ( include "release.hash" $ ) ( $name | sha256sum | trunc 8 ) ( include "openstack.discriminator.workload" $context ) }}
+
+{{- if $values.legacyResourceNames }}
+  {{- $pool_name = printf "%v-pool-%v" $.Release.Name $name }}
+  {{- $pool_name_discriminated = printf "%v-pool-%v-%v" $.Release.Name $name (include "openstack.discriminator.workload" $context) }}
+{{- end }}
 ---
 apiVersion: cluster.x-k8s.io/v1beta1
 kind: MachineDeployment
@@ -24,7 +29,7 @@ metadata:
     argocd.argoproj.io/sync-options: Delete=false
     {{- include "openstackcluster.autoscalingAnnotations" $pool | nindent 4 }}
 spec:
-  clusterName: "{{ $.Release.Name }}"
+  clusterName: {{ include "cluster.name" $ }}
   {{- if not $pool.autoscaling }}
   replicas: {{ $pool.replicas }}
   {{- end }}
@@ -32,7 +37,7 @@ spec:
     matchLabels:
   template:
     spec:
-      clusterName: "{{ $.Release.Name }}"
+      clusterName: {{ include "cluster.name" $ }}
       version: "{{ $pool.version }}"
       failureDomain: {{ include "openstack.failureDomain.compute.workload" $context }}
       bootstrap:
@@ -59,7 +64,7 @@ spec:
     spec:
       cloudName: {{ $.Values.openstack.cloud }}
       identityRef:
-        name: {{ $.Release.Name }}-cloud-config
+        name: {{ include "cloudconfig.name" $ }}
         kind: Secret
       flavor: {{ $pool.machine.flavor }}
       image: {{ $pool.machine.image }}
