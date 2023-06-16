@@ -1,19 +1,13 @@
 {{/*
 Rather than use the release name directly, we hash to to ensure we don't blow the
 63 character name limit that Kubernetes imposes.
-*/}}
-{{- define "release.hash" }}
-{{- .Release.Name | sha256sum | trunc 8 }}
-{{- end }}
-
-{{/*
 When running multiple CAPO instances against a single cloud, names may alias and
 you can end up using the same network for multiple clusters, when this happens its
 pretty easy for one to end up deleting the other and vice versa.  To prevent this
 we can inject a unique instance ID into the name to preven aliasing.
 */}}
-{{- define "controller.hash" }}
-{{- .Values.controllerInstance | sha256sum | trunc 8 }}
+{{- define "release.hash" }}
+{{- printf "%s:%s" .Values.controllerInstance .Release.Name | sha256sum | trunc 8 }}
 {{- end }}
 
 {{- define "cluster.name" }}
@@ -34,11 +28,7 @@ dev/staging/production CAPI instances.
 {{- if .Values.legacyResourceNames }}
   {{- .Release.Name }}
 {{- else }}
-  {{- if .Values.controllerInstance }}
-    {{- printf "cluster-%s-instance-%s" ( include "release.hash" . ) ( include "controller.hash" . ) }}
-  {{- else }}
-    {{- printf "cluster-%s" ( include "release.hash" . ) }}
-  {{- end }}
+  {{- printf "cluster-%s" ( include "release.hash" . ) }}
 {{- end }}
 {{- end }}
 
