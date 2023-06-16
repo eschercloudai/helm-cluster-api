@@ -227,6 +227,12 @@
 		"labelDomain": {
 			"type": "string"
 		},
+		"legacyResourceNames": {
+			"type": "boolean"
+		},
+		"controllerInstance": {
+			"type": "string"
+		},
 		"openstack": {
 			"type:": "object",
 			"required": [

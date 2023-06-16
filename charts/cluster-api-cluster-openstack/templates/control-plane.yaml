@@ -2,7 +2,7 @@
 kind: KubeadmControlPlane
 apiVersion: controlplane.cluster.x-k8s.io/v1beta1
 metadata:
-  name: "{{ .Release.Name }}-control-plane"
+  name: {{ include "kubeadmcontrolplane.name" . }}
   labels:
     {{- include "openstackcluster.labels" . | nindent 4 }}
   annotations:
@@ -15,7 +15,7 @@ spec:
     infrastructureRef:
       kind: OpenStackMachineTemplate
       apiVersion: infrastructure.cluster.x-k8s.io/v1alpha6
-      name: {{ .Release.Name }}-control-plane-{{ include "openstack.discriminator.control-plane" . }}
+      name: {{ include "controlplane.openstackmachinetemplate.name" . }}
   kubeadmConfigSpec:
     initConfiguration:
       nodeRegistration:
@@ -62,7 +62,7 @@ spec:
 apiVersion: infrastructure.cluster.x-k8s.io/v1alpha6
 kind: OpenStackMachineTemplate
 metadata:
-  name: {{ .Release.Name }}-control-plane-{{ include "openstack.discriminator.control-plane" . }}
+  name: {{ include "controlplane.openstackmachinetemplate.name" . }}
   labels:
     {{- include "openstackcluster.labels" . | nindent 4 }}
   annotations:
@@ -78,7 +78,7 @@ spec:
       {{- end }}
       cloudName: {{ .Values.openstack.cloud }}
       identityRef:
-        name: {{ .Release.Name }}-cloud-config
+        name: {{ include "cloudconfig.name" . }}
         kind: Secret
       {{- if .Values.controlPlane.machine.disk }}
       rootVolume:
