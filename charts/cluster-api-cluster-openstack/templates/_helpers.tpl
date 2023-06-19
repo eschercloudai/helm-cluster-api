@@ -1,21 +1,5 @@
-{{/*
-Rather than use the release name directly, we hash to to ensure we don't blow the
-63 character name limit that Kubernetes imposes.
-When running multiple CAPO instances against a single cloud, names may alias and
-you can end up using the same network for multiple clusters, when this happens its
-pretty easy for one to end up deleting the other and vice versa.  To prevent this
-we can inject a unique instance ID into the name to preven aliasing.
-*/}}
-{{- define "release.hash" }}
-{{- printf "%s:%s" .Values.controllerInstance .Release.Name | sha256sum | trunc 8 }}
-{{- end }}
-
 {{- define "cluster.name" }}
-{{- if .Values.legacyResourceNames }}
-  {{- .Release.Name }}
-{{- else }}
-  {{- printf "cluster-%s" ( include "release.hash" . ) }}
-{{- end }}
+{{- .Release.Name }}
 {{- end }}
 
 {{/*
@@ -25,26 +9,18 @@ a classic split-brain problem, but a legitimate one when you consider you can ha
 dev/staging/production CAPI instances.
 */}}
 {{- define "openstackcluster.name" }}
-{{- if .Values.legacyResourceNames }}
-  {{- .Release.Name }}
-{{- else }}
-  {{- printf "cluster-%s" ( include "release.hash" . ) }}
-{{- end }}
+{{- .Release.Name }}
 {{- end }}
 
 {{- define "cloudconfig.name" }}
-{{- if .Values.legacyResourceNames }}
-  {{- printf "%s-cloud-config" .Release.Name }}
-{{- else }}
-  {{- printf "cluster-%s-cloud-config" ( include "release.hash" . ) }}
-{{- end }}
+{{- printf "%s-cloud-config" .Release.Name }}
 {{- end }}
 
 {{- define "kubeadmcontrolplane.name" }}
 {{- if .Values.legacyResourceNames }}
   {{- printf "%s-control-plane" .Release.Name }}
 {{- else }}
-  {{- printf "cluster-%s" ( include "release.hash" . ) }}
+  {{- .Release.Name }}
 {{- end }}
 {{- end }}
 
@@ -53,11 +29,7 @@ The machine templates are a bit special in that their names will directly
 influence the hostnames of the nodes.
 */}}
 {{- define "controlplane.openstackmachinetemplate.name" }}
-{{- if .Values.legacyResourceNames }}
-  {{- printf "%s-control-plane-%s" .Release.Name ( include "openstack.discriminator.control-plane" . ) }}
-{{- else }}
-  {{- printf "cluster-%s-control-plane-%s" ( include "release.hash" . ) ( include "openstack.discriminator.control-plane" . ) }}
-{{- end }}
+{{- printf "%s-control-plane-%s" .Release.Name ( include "openstack.discriminator.control-plane" . ) }}
 {{- end }}
 
 {{/*
