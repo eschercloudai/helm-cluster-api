@@ -1,23 +1,13 @@
 # Label domain for implicit labels defined in this chart.
 labelDomain: eschercloud.ai
 
-# We used to name everything based on the release name, but by doing that
-# we quite easily blew the 63 character limit, this enables that old behaviour.
+# Legacy resource names are very easy to go over the 63 character resource name
+# limit as you can imagine a 53 character release concatenated with an arbitrary
+# sized pool name, and a random instance ID.  With this set to false, we'll put
+# tainted inputs through SHA2 and extract an 8 character substring (that's still
+# 4 billion possible outcomes).  Try to kee the release name in the ~20 character
+# range to avoid overflows (if this means hashing, do it).
 legacyResourceNames: false
-
-# CAPI instance that's creating the cluster.
-# Some providers expect only a single instance of CAPI to be controlling a
-# single cloud project.  If you have multiple instances, for example you
-# have a "development" and "production" CAPO, then names may alias due to
-# reuse across multiple instances.  Now depending on how broken the provider
-# is, if it goes on name alone you may get -- quite legitimately -- different
-# clusters using the same networks due to idempotentcy.  Where is goes badly
-# wrong is when the infrastructure provider looks at shared networks and
-# indiscrimately deletes all the things, thus deletion of one cluster can
-# cause deletion of another.  To solve this we allow a unique instance to be
-# injected so the names are different.  This is only applicable if
-# legacyResourceNames is set to false.
-controllerInstance: ""
 
 # OpenStack specific configuration.
 # Contains credentials for the cloud, networking options and other
