@@ -3,7 +3,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: capi-system/capi-serving-cert
-    controller-gen.kubebuilder.io/version: v0.10.0
+    controller-gen.kubebuilder.io/version: v0.11.4
   labels:
     cluster.x-k8s.io/provider: cluster-api
   name: machines.cluster.x-k8s.io
@@ -50,10 +50,12 @@ spec:
       name: NodeName
       priority: 1
       type: string
+    deprecated: true
     name: v1alpha3
     schema:
       openAPIV3Schema:
-        description: Machine is the Schema for the machines API.
+        description: "Machine is the Schema for the machines API. \n Deprecated: This\
+          \ type will be removed in one of the next releases."
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -398,10 +400,12 @@ spec:
       name: NodeName
       priority: 1
       type: string
+    deprecated: true
     name: v1alpha4
     schema:
       openAPIV3Schema:
-        description: Machine is the Schema for the machines API.
+        description: "Machine is the Schema for the machines API. \n Deprecated: This\
+          \ type will be removed in one of the next releases."
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -968,8 +972,8 @@ spec:
                       description: The machine address.
                       type: string
                     type:
-                      description: Machine address type, one of Hostname, ExternalIP
-                        or InternalIP.
+                      description: Machine address type, one of Hostname, ExternalIP,
+                        InternalIP, ExternalDNS or InternalDNS.
                       type: string
                   required:
                   - address

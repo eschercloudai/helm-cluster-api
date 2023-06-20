@@ -22,7 +22,7 @@ spec:
       - args:
         - --leader-elect
         - --metrics-bind-addr=localhost:8080
-        - --feature-gates=MachinePool={{ .Values.exp_machine_pool }},KubeadmBootstrapFormatIgnition={{ .Values.exp_kubeadm_bootstrap_format_ignition }}
+        - --feature-gates=MachinePool={{ .Values.exp_machine_pool }},KubeadmBootstrapFormatIgnition={{ .Values.exp_kubeadm_bootstrap_format_ignition }},LazyRestmapper={{ .Values.exp_lazy_restmapper }}
         - --bootstrap-token-ttl={{ .Values.kubeadm_bootstrap_token_ttl }}
         - --logging-format=json
         command:
@@ -45,10 +45,22 @@ spec:
           httpGet:
             path: /readyz
             port: healthz
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          runAsGroup: 65532
+          runAsUser: 65532
         volumeMounts:
         - mountPath: /tmp/k8s-webhook-server/serving-certs
           name: cert
           readOnly: true
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
       serviceAccountName: capi-kubeadm-bootstrap-manager
       terminationGracePeriodSeconds: 10
       tolerations:

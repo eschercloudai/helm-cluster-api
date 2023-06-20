@@ -3,7 +3,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: capi-system/capi-serving-cert
-    controller-gen.kubebuilder.io/version: v0.10.0
+    controller-gen.kubebuilder.io/version: v0.11.4
   labels:
     cluster.x-k8s.io/provider: cluster-api
   name: machinesets.cluster.x-k8s.io
@@ -45,10 +45,12 @@ spec:
       jsonPath: .status.readyReplicas
       name: Ready
       type: integer
+    deprecated: true
     name: v1alpha3
     schema:
       openAPIV3Schema:
-        description: MachineSet is the Schema for the machinesets API.
+        description: "MachineSet is the Schema for the machinesets API. \n Deprecated:\
+          \ This type will be removed in one of the next releases."
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -491,10 +493,12 @@ spec:
       jsonPath: .status.readyReplicas
       name: Ready
       type: integer
+    deprecated: true
     name: v1alpha4
     schema:
       openAPIV3Schema:
-        description: MachineSet is the Schema for the machinesets API.
+        description: "MachineSet is the Schema for the machinesets API. \n Deprecated:\
+          \ This type will be removed in one of the next releases."
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation

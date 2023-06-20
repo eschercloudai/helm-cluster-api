@@ -4,4 +4,4 @@ description: A Helm chart for deploying cluster API.
 icon: https://raw.githubusercontent.com/eschercloudai/helm-cluster-api/main/icons/default.png
 name: cluster-api-provider-openstack
 type: application
-version: v0.1.7
+version: v0.1.8

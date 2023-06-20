@@ -1,3 +1,4 @@
 cluster_topology: false
 exp_kubeadm_bootstrap_format_ignition: false
-image: registry.k8s.io/cluster-api/kubeadm-control-plane-controller:v1.3.2
+exp_lazy_restmapper: false
+image: registry.k8s.io/cluster-api/kubeadm-control-plane-controller:v1.4.3
