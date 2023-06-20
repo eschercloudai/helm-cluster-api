@@ -3,7 +3,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: capi-system/capi-serving-cert
-    controller-gen.kubebuilder.io/version: v0.10.0
+    controller-gen.kubebuilder.io/version: v0.11.4
   labels:
     cluster.x-k8s.io/provider: cluster-api
   name: clusterresourcesets.addons.cluster.x-k8s.io
@@ -30,11 +30,12 @@ spec:
     singular: clusterresourceset
   scope: Namespaced
   versions:
-  - name: v1alpha3
+  - deprecated: true
+    name: v1alpha3
     schema:
       openAPIV3Schema:
-        description: ClusterResourceSet is the Schema for the clusterresourcesets
-          API.
+        description: "ClusterResourceSet is the Schema for the clusterresourcesets\
+          \ API. \n Deprecated: This type will be removed in one of the next releases."
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -192,11 +193,12 @@ spec:
       jsonPath: .metadata.creationTimestamp
       name: Age
       type: date
+    deprecated: true
     name: v1alpha4
     schema:
       openAPIV3Schema:
-        description: ClusterResourceSet is the Schema for the clusterresourcesets
-          API.
+        description: "ClusterResourceSet is the Schema for the clusterresourcesets\
+          \ API. \n Deprecated: This type will be removed in one of the next releases."
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -451,6 +453,7 @@ spec:
                   Defaults to ApplyOnce. This field is immutable.
                 enum:
                 - ApplyOnce
+                - Reconcile
                 type: string
             required:
             - clusterSelector

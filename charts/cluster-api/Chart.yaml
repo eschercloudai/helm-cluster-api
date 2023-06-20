@@ -1,24 +1,24 @@
 apiVersion: v2
-appVersion: v1.3.2
+appVersion: v1.4.3
 name: cluster-api
 description: A Helm chart to deploy Cluster API
 type: application
-version: v0.1.7
+version: v0.1.8
 icon: https://raw.githubusercontent.com/eschercloudai/helm-cluster-api/main/icons/default.png
 
 dependencies:
 - name: cluster-api-core
-  version: v0.1.7
+  version: v0.1.8
   repository: file://../cluster-api-core
 - name: cluster-api-bootstrap-kubeadm
-  version: v0.1.7
+  version: v0.1.8
   repository: file://../cluster-api-bootstrap-kubeadm
   condition: kubeadm.enabled
 - name: cluster-api-control-plane-kubeadm
-  version: v0.1.7
+  version: v0.1.8
   repository: file://../cluster-api-control-plane-kubeadm
   condition: kubeadm.enabled
 - name: cluster-api-provider-openstack
-  version: v0.1.7
+  version: v0.1.8
   repository: file://../cluster-api-provider-openstack
   condition: openstack.enabled

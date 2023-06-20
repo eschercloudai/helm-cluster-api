@@ -3,7 +3,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: capi-system/capi-serving-cert
-    controller-gen.kubebuilder.io/version: v0.10.0
+    controller-gen.kubebuilder.io/version: v0.11.4
   labels:
     cluster.x-k8s.io/provider: cluster-api
   name: machinepools.cluster.x-k8s.io
@@ -46,10 +46,12 @@ spec:
       jsonPath: .spec.template.spec.version
       name: Version
       type: string
+    deprecated: true
     name: v1alpha3
     schema:
       openAPIV3Schema:
-        description: MachinePool is the Schema for the machinepools API.
+        description: "MachinePool is the Schema for the machinepools API. \n Deprecated:\
+          \ This type will be removed in one of the next releases."
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -597,10 +599,12 @@ spec:
       jsonPath: .spec.template.spec.version
       name: Version
       type: string
+    deprecated: true
     name: v1alpha4
     schema:
       openAPIV3Schema:
-        description: MachinePool is the Schema for the machinepools API.
+        description: "MachinePool is the Schema for the machinepools API. \n Deprecated:\
+          \ This type will be removed in one of the next releases."
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
