@@ -80,6 +80,15 @@ capacity.cluster-autoscaler.kubernetes.io/gpu-count: '{{ $gpu.count }}'
 {{- end }}
 
 {{/*
+Pool name annotations.
+This uses the pool name, un obfuscated to make it easier for external management
+to reason about the cluster.
+*/}}
+{{- define "pool.annotatations" -}}
+pool.{{ .values.labelDomain }}/name: {{ .name }}
+{{- end }}
+
+{{/*
 Workload failure domain.
 */}}
 {{- define "openstack.failureDomain.compute.workload" -}}
