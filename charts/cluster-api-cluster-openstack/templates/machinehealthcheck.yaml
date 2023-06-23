@@ -1,0 +1,26 @@
+# NOTE: you have to set the timeouts to whatever json.Marshal of a
+# apimachinery metav1.Duration would look like not just "10m" as argo
+# will constantly try to reconcile.
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: MachineHealthCheck
+metadata:
+  name: {{ include "cluster.name" . }}
+  labels:
+    {{- include "openstackcluster.labels" . | nindent 4 }}
+spec:
+  clusterName: {{ include "cluster.name" . }}
+  maxUnhealthy: 50%
+  nodeStartupTimeout: 10m0s
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: {{ include "cluster.name" . }}
+  unhealthyConditions:
+  # If the machine is shutdown for whatever reason, it looks like this
+  # usualy live-migration gone bad.
+  - type: Ready
+    status: Unknown
+    timeout: 10m0s
+  # Assuming this rolls up any other error...
+  - type: Ready
+    status: "False"
+    timeout: 10m0s
