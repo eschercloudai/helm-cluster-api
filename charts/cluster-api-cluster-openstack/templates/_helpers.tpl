@@ -63,7 +63,8 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Autoscaling annotations
 */}}
 {{- define "openstackcluster.autoscalingAnnotations" -}}
-{{- with $autoscaling := .autoscaling }}
+{{- with $pool := .pool }}
+{{- with $autoscaling := $pool.autoscaling }}
 {{- with $limits := $autoscaling.limits -}}
 cluster.x-k8s.io/cluster-api-autoscaler-node-group-min-size: '{{ $limits.minReplicas }}'
 cluster.x-k8s.io/cluster-api-autoscaler-node-group-max-size: '{{ $limits.maxReplicas }}'
@@ -77,6 +78,8 @@ capacity.cluster-autoscaler.kubernetes.io/gpu-count: '{{ $gpu.count }}'
 {{- end }}
 {{- end }}
 {{- end }}
+{{- end }}
+capacity.cluster-autoscaler.kubernetes.io/labels: {{ include "openstack.nodelabels.workload" . }}
 {{- end }}
 
 {{/*
