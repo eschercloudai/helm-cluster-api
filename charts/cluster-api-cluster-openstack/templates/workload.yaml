@@ -28,7 +28,7 @@ metadata:
     # Let CAPO do this in its chosen order.
     argocd.argoproj.io/sync-options: Delete=false
     {{- include "pool.annotatations" $context | nindent 4 }}
-    {{- include "openstackcluster.autoscalingAnnotations" $pool | nindent 4 }}
+    {{- include "openstackcluster.autoscalingAnnotations" $context | nindent 4 }}
 spec:
   clusterName: {{ include "cluster.name" $ }}
   {{- if not $pool.autoscaling }}
