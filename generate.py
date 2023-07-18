@@ -55,6 +55,10 @@ def main():
     for o in objects:
         kind = o['kind']
 
+        # Remove erroneous fields added by upstream.
+        if 'creationTimestamp' in o['metadata']:
+            del o['metadata']['creationTimestamp']
+
         # CRDs go in a special place.
         if kind == 'CustomResourceDefinition':
             with open(f'{chart_root}/crds/{o["metadata"]["name"]}.yaml', 'w') as out:

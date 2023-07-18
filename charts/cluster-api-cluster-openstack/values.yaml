@@ -23,7 +23,7 @@ openstack:
   externalNetworkID: b19ce45a-3278-48e4-8a0e-83100af68778
 
   # Openstack endpoint CA, base64 encoded.
-  ca: Y2hhbmdlIG1lIQ==
+  # ca: Y2hhbmdlIG1lIQ==
 
   # SSH key.
   #
