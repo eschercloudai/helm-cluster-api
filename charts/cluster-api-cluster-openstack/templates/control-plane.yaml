@@ -50,6 +50,7 @@ spec:
       controllerManager:
         extraArgs:
           cloud-provider: external
+          bind-address: "0.0.0.0"
       etcd:
         local:
           extraArgs:
