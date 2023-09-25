@@ -236,7 +236,6 @@
 				"cloud",
 				"cloudsYAML",
 				"externalNetworkID",
-				"ca",
 				"computeFailureDomain"
 			],
 			"properties": {

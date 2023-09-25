@@ -88,7 +88,7 @@ spec:
   source:
     repoURL: https://eschercloudai.github.io/helm-cluster-api
     chart: cluster-api
-    targetRevision: v0.1.1
+    targetRevision: v0.1.9
   destination:
     server: https://172.18.255.200:443
   ignoreDifferences:
@@ -146,7 +146,7 @@ spec:
   source:
     repoURL: https://eschercloudai.github.io/helm-cluster-api
     chart: cluster-api-core
-    targetRevision: v0.1.1
+    targetRevision: v0.1.9
   destination:
     server: https://172.18.255.200:443
   ignoreDifferences:
@@ -195,7 +195,7 @@ spec:
   source:
     repoURL: https://eschercloudai.github.io/helm-cluster-api
     chart: cluster-api-bootstrap-kubeadm
-    targetRevision: v0.1.1
+    targetRevision: v0.1.9
   destination:
     server: https://172.18.255.200:443
   ignoreDifferences:
@@ -237,7 +237,7 @@ spec:
   source:
     repoURL: https://eschercloudai.github.io/helm-cluster-api
     chart: cluster-api-control-plane-kubeadm
-    targetRevision: v0.1.1
+    targetRevision: v0.1.9
   destination:
     server: https://172.18.255.200:443
   ignoreDifferences:

@@ -19,7 +19,7 @@ spec:
         {{- end }}
     serviceDomain: "cluster.local"
   infrastructureRef:
-    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha6
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha7
     kind: OpenStackCluster
     name: {{ include "openstackcluster.name" . }}
   controlPlaneRef:
@@ -27,7 +27,7 @@ spec:
     apiVersion: controlplane.cluster.x-k8s.io/v1beta1
     name: {{ include "kubeadmcontrolplane.name" . }}
 ---
-apiVersion: infrastructure.cluster.x-k8s.io/v1alpha6
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha7
 kind: OpenStackCluster
 metadata:
   name: {{ include "openstackcluster.name" . }}
@@ -73,4 +73,6 @@ metadata:
     argocd.argoproj.io/sync-wave: "-1"
 data:
   clouds.yaml: {{ .Values.openstack.cloudsYAML }}
+  {{- if .Values.openstack.ca }}
   cacert: {{ .Values.openstack.ca }}
+  {{- end }}
