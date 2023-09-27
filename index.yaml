@@ -3,6 +3,33 @@ entries:
   cluster-api:
   - apiVersion: v2
     appVersion: v1.4.3
+    created: "2023-09-27T09:24:13.988358089Z"
+    dependencies:
+    - name: cluster-api-core
+      repository: file://../cluster-api-core
+      version: v0.1.10
+    - condition: kubeadm.enabled
+      name: cluster-api-bootstrap-kubeadm
+      repository: file://../cluster-api-bootstrap-kubeadm
+      version: v0.1.10
+    - condition: kubeadm.enabled
+      name: cluster-api-control-plane-kubeadm
+      repository: file://../cluster-api-control-plane-kubeadm
+      version: v0.1.10
+    - condition: openstack.enabled
+      name: cluster-api-provider-openstack
+      repository: file://../cluster-api-provider-openstack
+      version: v0.1.10
+    description: A Helm chart to deploy Cluster API
+    digest: 466c4ce74a172aab5c6ec2a979090fe5fb8a41f3d56617a853d4a5675ef663fe
+    icon: https://raw.githubusercontent.com/eschercloudai/helm-cluster-api/main/icons/default.png
+    name: cluster-api
+    type: application
+    urls:
+    - https://github.com/eschercloudai/helm-cluster-api/releases/download/cluster-api-v0.1.10/cluster-api-v0.1.10.tgz
+    version: v0.1.10
+  - apiVersion: v2
+    appVersion: v1.4.3
     created: "2023-09-25T13:54:06.12681052Z"
     dependencies:
     - name: cluster-api-core
@@ -268,6 +295,17 @@ entries:
     - https://github.com/eschercloudai/helm-cluster-api/releases/download/cluster-api-v0.1.0/cluster-api-v0.1.0.tgz
     version: v0.1.0
   cluster-api-bootstrap-kubeadm:
+  - apiVersion: v2
+    appVersion: v1.4.3
+    created: "2023-09-27T09:24:13.007185235Z"
+    description: A Helm chart for deploying cluster API.
+    digest: 82a671073c764f1ce9117322e6460d8fb87985c8feb6ea9c6f3750fb38fd087b
+    icon: https://raw.githubusercontent.com/eschercloudai/helm-cluster-api/main/icons/default.png
+    name: cluster-api-bootstrap-kubeadm
+    type: application
+    urls:
+    - https://github.com/eschercloudai/helm-cluster-api/releases/download/cluster-api-bootstrap-kubeadm-v0.1.10/cluster-api-bootstrap-kubeadm-v0.1.10.tgz
+    version: v0.1.10
   - apiVersion: v2
     appVersion: v1.4.3
     created: "2023-09-25T13:54:05.042492147Z"
@@ -726,6 +764,17 @@ entries:
   cluster-api-control-plane-kubeadm:
   - apiVersion: v2
     appVersion: v1.4.3
+    created: "2023-09-27T09:24:13.300888792Z"
+    description: A Helm chart for deploying cluster API.
+    digest: 6314aa8eb028294babb0a485d2c9e2e90ff1c56563ee2ad7eecba3ddbff0d527
+    icon: https://raw.githubusercontent.com/eschercloudai/helm-cluster-api/main/icons/default.png
+    name: cluster-api-control-plane-kubeadm
+    type: application
+    urls:
+    - https://github.com/eschercloudai/helm-cluster-api/releases/download/cluster-api-control-plane-kubeadm-v0.1.10/cluster-api-control-plane-kubeadm-v0.1.10.tgz
+    version: v0.1.10
+  - apiVersion: v2
+    appVersion: v1.4.3
     created: "2023-09-25T13:54:05.537043427Z"
     description: A Helm chart for deploying cluster API.
     digest: cc8e0d4f9a9d7a1f0b511439bf584d900bf014365df8a6cd6bbdad5de5be2d39
@@ -833,6 +882,17 @@ entries:
     - https://github.com/eschercloudai/helm-cluster-api/releases/download/cluster-api-control-plane-kubeadm-v0.1.0/cluster-api-control-plane-kubeadm-v0.1.0.tgz
     version: v0.1.0
   cluster-api-core:
+  - apiVersion: v2
+    appVersion: v1.4.3
+    created: "2023-09-27T09:24:13.52733822Z"
+    description: A Helm chart for deploying cluster API.
+    digest: e411ca9a19f5970bcaa3a0f942cd4302a4f793cc615db7055b6a88587b131499
+    icon: https://raw.githubusercontent.com/eschercloudai/helm-cluster-api/main/icons/default.png
+    name: cluster-api-core
+    type: application
+    urls:
+    - https://github.com/eschercloudai/helm-cluster-api/releases/download/cluster-api-core-v0.1.10/cluster-api-core-v0.1.10.tgz
+    version: v0.1.10
   - apiVersion: v2
     appVersion: v1.4.3
     created: "2023-09-25T13:54:05.749018091Z"
@@ -944,6 +1004,17 @@ entries:
   cluster-api-provider-openstack:
   - apiVersion: v2
     appVersion: v0.8.0
+    created: "2023-09-27T09:24:13.749096784Z"
+    description: A Helm chart for deploying cluster API.
+    digest: b560b97a6a7763c522ac8dab7b8df2fe52793f06bf9ba7997d91d152939fb4b6
+    icon: https://raw.githubusercontent.com/eschercloudai/helm-cluster-api/main/icons/default.png
+    name: cluster-api-provider-openstack
+    type: application
+    urls:
+    - https://github.com/eschercloudai/helm-cluster-api/releases/download/cluster-api-provider-openstack-v0.1.10/cluster-api-provider-openstack-v0.1.10.tgz
+    version: v0.1.10
+  - apiVersion: v2
+    appVersion: v0.8.0
     created: "2023-09-25T13:54:05.949922983Z"
     description: A Helm chart for deploying cluster API.
     digest: 6cc795386bab11da6c053500fffd737f838fbb28be88dacadfe3567b4a53fdc5
@@ -1050,4 +1121,4 @@ entries:
     urls:
     - https://github.com/eschercloudai/helm-cluster-api/releases/download/cluster-api-provider-openstack-v0.1.0/cluster-api-provider-openstack-v0.1.0.tgz
     version: v0.1.0
-generated: "2023-09-25T13:57:17.250874514Z"
+generated: "2023-09-27T09:24:13.988589592Z"
