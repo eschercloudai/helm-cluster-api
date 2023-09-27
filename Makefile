@@ -1,5 +1,5 @@
 # Update this for every tagged release.
-CHART_VERSION = v0.1.9
+CHART_VERSION = v0.1.10
 
 # Defines the versions to use for cluster API components.
 CAPI_VERSION = v1.4.3
@@ -40,7 +40,7 @@ cluster-api-control-plane-kubeadm:
 
 .PHONY: cluster-api-provider-openstack
 cluster-api-provider-openstack:
-	$(GENERATE) --chart $@ --version $(CHART_VERSION) --app-version $(CAPO_VERSION) --path https://github.com/kubernetes-sigs/cluster-api-provider-openstack/config/default?ref=${CAPO_VERSION} --image k8s.gcr.io/capi-openstack/capi-openstack-controller:$(CAPO_VERSION)
+	$(GENERATE) --chart $@ --version $(CHART_VERSION) --app-version $(CAPO_VERSION) --path https://github.com/kubernetes-sigs/cluster-api-provider-openstack/config/default?ref=${CAPO_VERSION} --image registry.k8s.io/capi-openstack/capi-openstack-controller:$(CAPO_VERSION)
 
 .PHONY: test
 test:
