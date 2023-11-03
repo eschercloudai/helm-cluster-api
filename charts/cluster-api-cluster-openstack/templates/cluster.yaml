@@ -55,6 +55,10 @@ spec:
   managedSecurityGroups: true
   allowAllInClusterTraffic: true
   nodeCidr: {{ .Values.network.nodeCIDR }}
+  {{- if .Values.network.routerID }}
+  router:
+    id: {{ .Values.network.baremetal.routerID }}
+  {{- end }}
   dnsNameservers:
     {{- range .Values.network.dnsNameservers}}
     {{- printf "- %s" . | nindent 2 }}

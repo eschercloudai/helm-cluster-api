@@ -342,7 +342,21 @@
                                 },
                                 "dnsNameservers": {
 					"$ref": "#/$defs/nonEmptyIPV4List"
-                                }
+                                },
+                                "baremetal": {
+									"type": "object",
+									"properties": {
+										"routerID": {
+											"type": "string"
+										},
+										"networkName": {
+											"type": "string"
+										},
+										"subnetName": {
+											"type": "string"
+										}
+									}
+								}
 			}
 		}
 	}

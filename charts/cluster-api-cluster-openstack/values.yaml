@@ -185,3 +185,8 @@ network:
   # DNS nameservers to use.
   dnsNameservers:
   - 8.8.8.8
+
+  baremetal:
+    routerID: ""
+    networkName: "baremetal_network"
+    subnetName: "baremetal_subnet"
