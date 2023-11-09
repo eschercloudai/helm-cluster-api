@@ -51,6 +51,7 @@ spec:
         {{- end }}
       {{- end }}
     {{- end }}
+  controlPlaneOmitAvailabilityZone: true
   managedSecurityGroups: true
   allowAllInClusterTraffic: true
   nodeCidr: {{ .Values.network.nodeCIDR }}
