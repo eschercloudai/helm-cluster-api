@@ -3,7 +3,7 @@
 
 {{/*
 Helm is a bit crap in that $. doesn't work in an include with a non-global scope.
-To combat this, we build a custom context before handing off to thte template.
+To combat this, we build a custom context before handing off to the template.
 */}}
 {{- $context := dict "name" $name "pool" $pool "values" $values }}
 
@@ -85,12 +85,7 @@ spec:
         {{- end }}
       {{- end }}
       {{- if contains $pool.machine.flavor "baremetal" }}
-      ports:
-        - network:
-            name: {{ $.Values.network.baremetal.networkName }}
-          fixedIPs:
-            - subnet:
-                name: {{ $.Values.network.baremetal.subnetName }}
+      configDrive: true
       {{- end }}
 ---
 apiVersion: bootstrap.cluster.x-k8s.io/v1beta1

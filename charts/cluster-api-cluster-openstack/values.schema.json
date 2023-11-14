@@ -334,29 +334,24 @@
 				"nodeCIDR": {
 					"$ref": "#/$defs/ipv4Prefix"
 				},
-                                "serviceCIDRs": {
-					"$ref": "#/$defs/nonEmptyIPV4PrefixList"
-                                },
-                                "podCIDRs": {
-					"$ref": "#/$defs/nonEmptyIPV4PrefixList"
-                                },
-                                "dnsNameservers": {
-					"$ref": "#/$defs/nonEmptyIPV4List"
-                                },
-                                "baremetal": {
-									"type": "object",
-									"properties": {
-										"routerID": {
-											"type": "string"
-										},
-										"networkName": {
-											"type": "string"
-										},
-										"subnetName": {
-											"type": "string"
-										}
-									}
-								}
+				"serviceCIDRs": {
+	"$ref": "#/$defs/nonEmptyIPV4PrefixList"
+				},
+				"podCIDRs": {
+	"$ref": "#/$defs/nonEmptyIPV4PrefixList"
+				},
+				"dnsNameservers": {
+	"$ref": "#/$defs/nonEmptyIPV4List"
+				},
+				"routerID": {
+					"type:": "string"
+				},
+				"networkID": {
+					"type:": "string"
+				},
+				"subnetID": {
+					"type:": "string"
+				}
 			}
 		}
 	}

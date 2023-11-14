@@ -54,10 +54,20 @@ spec:
   controlPlaneOmitAvailabilityZone: true
   managedSecurityGroups: true
   allowAllInClusterTraffic: true
+  {{- if not .Values.network.subnetID }}
   nodeCidr: {{ .Values.network.nodeCIDR }}
+  {{- end }}
   {{- if .Values.network.routerID }}
   router:
-    id: {{ .Values.network.baremetal.routerID }}
+    id: {{ .Values.network.routerID }}
+  {{- end }}
+  {{- if .Values.network.networkID }}
+  network:
+    id: {{ .Values.network.networkID }}
+  {{- end }}
+  {{- if .Values.network.subnetID }}
+  subnet:
+    id: {{ .Values.network.subnetID }}
   {{- end }}
   dnsNameservers:
     {{- range .Values.network.dnsNameservers}}

@@ -186,7 +186,11 @@ network:
   dnsNameservers:
   - 8.8.8.8
 
-  baremetal:
-    routerID: ""
-    networkName: "baremetal_network"
-    subnetName: "baremetal_subnet"
+  # Use existing router
+  # routerID:
+  
+  # Use existing network
+  # networkID:
+  
+  # Use existing subnet
+  # subnetID:
