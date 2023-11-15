@@ -3,7 +3,7 @@
 
 {{/*
 Helm is a bit crap in that $. doesn't work in an include with a non-global scope.
-To combat this, we build a custom context before handing off to thte template.
+To combat this, we build a custom context before handing off to the template.
 */}}
 {{- $context := dict "name" $name "pool" $pool "values" $values }}
 
@@ -84,6 +84,9 @@ spec:
           {{- toYaml $metadata | nindent 8 }}
         {{- end }}
       {{- end }}
+      {{- if contains $pool.machine.flavor "baremetal" }}
+      configDrive: true
+      {{- end }}
 ---
 apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
 kind: KubeadmConfigTemplate
@@ -100,11 +103,11 @@ spec:
     spec:
       files:
       {{- range $file := $pool.files }}
-      - content: {{ $file.content }}
-        encoding: base64
-        owner: root
-        path: {{ $file.path }}
-        permissions: "0600"
+        - content: {{ $file.content }}
+          encoding: base64
+          owner: root
+          path: {{ $file.path }}
+          permissions: "0600"
       {{- end }}
       joinConfiguration:
         nodeRegistration:

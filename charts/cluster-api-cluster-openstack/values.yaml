@@ -185,3 +185,12 @@ network:
   # DNS nameservers to use.
   dnsNameservers:
   - 8.8.8.8
+
+  # Use existing router
+  # routerID:
+  
+  # Use existing network
+  # networkID:
+  
+  # Use existing subnet
+  # subnetID:
